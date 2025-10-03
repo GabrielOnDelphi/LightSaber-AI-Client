@@ -25,3 +25,6 @@ TAiClient -> TAiClientEx
                   
 About 1500 lines of code.  
 
+<p align="center">
+  <img src="Screenshot.png" alt="Screenshot">
+</p>
