@@ -33,8 +33,7 @@ package LightSaberAI;
 requires
   Rtl,
   BindEngine,
-  LightCore,
-  soaprtl;
+  LightCore;
 
 contains
   AiClient in 'AiClient.pas',
@@ -42,6 +41,8 @@ contains
   AiLLM in 'AiLLM.pas',
   AiLLMGemini in 'AiLLMGemini.pas',
   AiHistory in 'AiHistory.pas',
-  AIUtils in 'AIUtils.pas';
+  AIUtils in 'AIUtils.pas',
+  JsonUtils in 'JsonUtils.pas';
 
 end.
+
