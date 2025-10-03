@@ -18,9 +18,13 @@ For the moment it only supports Gemini, but it can be easily supported to suppor
  * Delivered as Delphi package (DPK)
  * Heavily tested!   
  
- 
+Architecture:
 TAiClient -> TAiClientEx   
                   |       
                   + TLLMObject -> TLLMGemini  
                   
 About 1500 lines of code.  
+
+<p align="center">
+  <img src="Screenshot.png" alt="Screenshot">
+</p>
