@@ -41,7 +41,7 @@ TYPE
     procedure Gui2Obj;
     procedure Obj2Gui(aGemini: TAiClient);
   public
-    class procedure ShowSettings(aGemini: TAiClient);
+    class procedure ShowFormModal(aGemini: TAiClient);
   end;
 
 
@@ -49,12 +49,12 @@ IMPLEMENTATION {$R *.fmx}
 
 
 
-class procedure TfrmGemini.ShowSettings(aGemini: TAiClient);
+class procedure TfrmGemini.ShowFormModal(aGemini: TAiClient);
 VAR frmGemini: TfrmGemini;
 begin
   AppData.CreateForm(TfrmGemini, frmGemini);
   frmGemini.Obj2Gui(aGemini);
-  frmGemini.Show;
+  AppData.ShowModal(frmGemini);
 end;
 
 

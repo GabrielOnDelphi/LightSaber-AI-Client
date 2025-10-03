@@ -285,7 +285,7 @@ begin
   Request    := NIL;
   RespJSON   := NIL;
   RequestBody:= NIL;
-  AppDataCore.RamLog.AddVerb('Sending request to LLM: '+ BodyJSON.ToString);       // https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyByVisCekNR1ZfRFawF6VsqrkwDjpNFBs4
+  AppDataCore.RamLog.AddVerb('Sending request to LLM: '+ BodyJSON.ToString);       // https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=x
 
   Result:= TAIResponse.Create; // Initialize with default values
   Result.ErrorMsg:= '';

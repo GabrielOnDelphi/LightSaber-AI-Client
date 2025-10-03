@@ -19,12 +19,15 @@ For the moment it only supports Gemini, but it can be easily supported to suppor
  * Heavily tested!   
  
 Architecture:  
-TAiClient -> TAiClientEx   
+ TAiClient -> TAiClientEx   
                   |       
                   + TLLMObject -> TLLMGemini  
                   
-About 1500 lines of code.  
+ About 1500 lines of code.  
 
+Star this project if you want to encourage future updates.
+
+Editor:  
 <p align="center">
   <img src="Screenshot.png" alt="Screenshot">
 </p>
