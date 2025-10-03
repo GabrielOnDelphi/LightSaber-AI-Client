@@ -9,7 +9,7 @@ UNIT AiClientEx;
 
 INTERFACE
 USES
-   System.JSON, System.SysUtils, System.IOUtils, System.Generics.Collections,
+   System.JSON, System.SysUtils, System.Generics.Collections,
    AiHistory, AiClient, AiLLM;
 
 TYPE
@@ -18,7 +18,6 @@ TYPE
   TAiClientEx = class(TAiClient)
   private
     // JSON SYSTEM
-    function file2JsonObj         (CONST FilePath: string): TJSONObject;
     function makeGenerationConfig (CONST FilePath: string ): TJSONPair;
 
     // JSON CONTENTS
@@ -34,12 +33,10 @@ TYPE
   end;
 
 
-function MakeTextPart(const TextPrompt: String): TJSONObject;
-
 
 IMPLEMENTATION
 USES
-   AiUtils, LightCore.AppData;
+   AiUtils, LightCore.AppData, JsonUtils;
 
 
 
@@ -221,41 +218,6 @@ end;
    JSON GenConfig
 -------------------------------------------------------------------------------------------------------------}
 
-function TAiClientEx.file2JsonObj(const FilePath: String): TJSONObject;
-var
-  JsonFileContent: string;
-  JsonValue: TJSONValue;
-begin
-
-  if not TFile.Exists(FilePath)
-  then RAISE Exception.CreateFmt('JSON file not found: %s', [FilePath]);
-
-  try
-    JsonFileContent := TFile.ReadAllText(FilePath);
-
-    // Parse the JSON and ensure it's an object
-    JsonValue := TJSONObject.ParseJSONValue(JsonFileContent);
-    if NOT Assigned(JsonValue)
-    then RAISE Exception.CreateFmt('Invalid JSON in file: %s', [FilePath]);
-
-    if NOT (JsonValue is TJSONObject) then
-    begin
-      FreeAndNil(JsonValue);
-      RAISE Exception.CreateFmt('JSON file does not contain an object: %s', [FilePath]);
-    end;
-
-    Result := JsonValue as TJSONObject;
-  except
-    on E: Exception do
-    begin
-      if Assigned(JsonValue)
-      then FreeAndNil(JsonValue);
-      RAISE Exception.CreateFmt('Error parsing JSON file %s: %s', [FilePath, E.Message]);
-    end;
-  end;
-end;
-
-
 function TAiClientEx.makeGenerationConfig(CONST FilePath: String): TJSONPair;
 VAR
   ResponseSchema: TJSONObject;
@@ -269,7 +231,7 @@ begin
   GenerationConfigObj:= nil;
 
   TRY
-    ResponseSchema := File2JsonObj(FilePath);              // Transfer ownership to the pair, so don't free this object here
+    ResponseSchema:= File2Json(FilePath);              // Transfer ownership to the pair, so don't free this object here
 
     // This is only for Gemini 2.5
     ThinkingConfig25 := TJSONObject.Create;                // Transfer ownership to the pair, so don't free this object here
@@ -294,14 +256,6 @@ begin
     FreeAndNil(GenerationConfigObj);
     RAISE;
   END;
-end;
-
-
-// Makes the text part for Contents
-function MakeTextPart(const TextPrompt: String): TJSONObject;
-begin
-  VAR Pair:= TJsonPair.Create('text', TextPrompt);
-  Result:= TJSONObject.Create(Pair);
 end;
 
 

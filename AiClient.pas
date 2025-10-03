@@ -4,7 +4,9 @@ UNIT AiClient;
    www.GabrielMoraru.com
    2025.07
 --------------------------------------------------------------------------------------------------------------
-   Makes a Post Http Request to a LLM (Low level code)
+   Makes a Post Http Request to a LLM.
+   The actual LLM is represented by the TLLMObject.
+   (Low level code)
 -------------------------------------------------------------------------------------------------------------}
 
 INTERFACE
@@ -285,7 +287,7 @@ begin
   Request    := NIL;
   RespJSON   := NIL;
   RequestBody:= NIL;
-  AppDataCore.RamLog.AddVerb('Sending request to LLM: '+ BodyJSON.ToString);       // https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=x
+  AppDataCore.RamLog.AddVerb('Sending request to LLM: '+ BodyJSON.ToString);
 
   Result:= TAIResponse.Create; // Initialize with default values
   Result.ErrorMsg:= '';
