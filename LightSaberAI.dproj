@@ -150,13 +150,13 @@
         <DCCReference Include="Rtl.dcp"/>
         <DCCReference Include="BindEngine.dcp"/>
         <DCCReference Include="LightCore.dcp"/>
-        <DCCReference Include="soaprtl.dcp"/>
         <DCCReference Include="AiClient.pas"/>
         <DCCReference Include="AiClientEx.pas"/>
         <DCCReference Include="AiLLM.pas"/>
         <DCCReference Include="AiLLMGemini.pas"/>
         <DCCReference Include="AiHistory.pas"/>
         <DCCReference Include="AIUtils.pas"/>
+        <DCCReference Include="JsonUtils.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
