@@ -18,7 +18,7 @@ For the moment it only supports Gemini, but it can be easily supported to suppor
  * Delivered as Delphi package (DPK)
  * Heavily tested!   
  
-Architecture:
+Architecture:  
 TAiClient -> TAiClientEx   
                   |       
                   + TLLMObject -> TLLMGemini  
