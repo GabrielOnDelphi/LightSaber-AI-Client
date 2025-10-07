@@ -4,6 +4,7 @@ Delphi AI client with advanced capabilities.
 
 For the moment it only supports Gemini, but it can be easily supported to support multiple LLMs by extending TLLMObject.  
 
+ * Send text requirest to AI and receives answer back.
  * Support for sending multiple files to AI
  * Support for multi-turn chat
  * GUI to set up the LLM parameters
