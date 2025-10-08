@@ -109,10 +109,8 @@ end;
 
 
 procedure TLLMObject.Load(Stream: TCubicBuffStream2);
-VAR
-  Version: Word;
 begin
-  if NOT Stream.ReadHeaderVersion(StreamSignature, Version) then EXIT;   // Header & version number
+  Stream.ReadHeader(StreamSignature, 1);
   ApiKey     := Stream.ReadString;
   Model      := Stream.ReadString;
   ApiBase    := Stream.ReadString;
