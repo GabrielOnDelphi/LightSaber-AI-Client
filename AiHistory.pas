@@ -37,8 +37,8 @@ TYPE
    public
      function FileExists(FileName: string): Boolean;
 
-     procedure Load(Stream: TCubicBuffStream2);
-     procedure Save(Stream: TCubicBuffStream2);
+     procedure Load(Stream: TCubicBuffStream2); virtual; abstract;
+     procedure Save(Stream: TCubicBuffStream2); virtual; abstract;
      procedure ReverseOrder;
   end;
 
@@ -131,42 +131,6 @@ begin
     FreeAndNil(TempList);
   end;
 end;
-
-
-
-{-------------------------------------------------------------------------------------------------------------
-   IO
--------------------------------------------------------------------------------------------------------------}
-procedure TChatParts.Load(Stream: TCubicBuffStream2);
-VAR Version: Word;
-begin
-  if NOT Stream.ReadHeaderVersion(StreamSignature, Version) then EXIT;   // Header & version number
-
-  var Total:= Stream.ReadInteger;
-  for var i:= 1 to Total do
-   begin
-     var Obj:= TChatPart.Create;
-     Obj.Load(Stream);
-     Add(Obj);
-   end;
-
-  Stream.ReadPaddingE(12);
-end;
-
-
-procedure TChatParts.Save(Stream: TCubicBuffStream2);var Part: TChatPart;
-begin
-  Stream.WriteHeader(StreamSignature, 1);  // Header & version number
-
-  Stream.WriteInteger(Count);
-  for Part in Self do
-    Part.Save(Stream);
-
-  Stream.WritePadding(12);
-end;
-
-
-
 
 
 {-------------------------------------------------------------------------------------------------------------
