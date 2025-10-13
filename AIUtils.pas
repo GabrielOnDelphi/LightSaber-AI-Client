@@ -27,7 +27,7 @@ procedure DeleteResponseFile   (ShortFileName: string);
 function  GetBackupJsonFullName(ShortFileName: string; AppendDate: Boolean= FALSE): string;
 
 // Gemini specific
-procedure Rescale(var BoundBox: TRect; aWidth, aHeight: integer);
+procedure Rescale(var BoundBox: TRectF; aWidth, aHeight: integer);
 
 
 
@@ -96,7 +96,7 @@ end;
 
 -------------------------------------------------------------------------------------------------------------}
 // This is for Gemini images
-procedure Rescale(var BoundBox: TRect; aWidth, aHeight: integer);
+procedure Rescale(var BoundBox: TRectF; aWidth, aHeight: integer);
 begin
   BoundBox.Left   := round((BoundBox.Left   / 1000) * aWidth);
   BoundBox.Right  := round((BoundBox.Right  / 1000) * aWidth);
