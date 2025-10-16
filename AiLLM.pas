@@ -11,14 +11,14 @@ INTERFACE
 
 USES
   System.SysUtils, System.Classes,
-  LightCore.StreamBuff2, LightCore.AppData, LightCore.TextFile;
+  LightCore.StreamBuff, LightCore.AppData, LightCore.TextFile;
 
 TYPE
   TLLMObject = class
    private
-    CONST StreamSignature: AnsiString= 'TLLMObject';
-    procedure Load(Stream: TCubicBuffStream2);    overload;
-    procedure Save(Stream: TCubicBuffStream2);    overload;
+    CONST ClassSignature: AnsiString= 'TLLMObject';
+    procedure Load(Stream: TLightStream);    overload;
+    procedure Save(Stream: TLightStream);    overload;
    public
     ApiKey      : string;
     Model       : string;
@@ -87,7 +87,7 @@ end;
 procedure TLLMObject.Load(FileName: string);
 begin
   if NOT FileExists(FileName) then EXIT;
-  VAR Stream:= TCubicBuffStream2.CreateRead(FileName);
+  VAR Stream:= TLightStream.CreateRead(FileName);
   TRY
     Load(Stream);
   FINALLY
@@ -98,7 +98,7 @@ end;
 
 procedure TLLMObject.Save(FileName: string);
 begin
-  VAR Stream:= TCubicBuffStream2.CreateWrite(FileName);
+  VAR Stream:= TLightStream.CreateWrite(FileName);
   TRY
     Save(Stream);
   FINALLY
@@ -108,9 +108,9 @@ end;
 
 
 
-procedure TLLMObject.Load(Stream: TCubicBuffStream2);
+procedure TLLMObject.Load(Stream: TLightStream);
 begin
-  Stream.ReadHeader(StreamSignature, 1);
+  Stream.ReadHeader(ClassSignature, 1);
   ApiKey     := Stream.ReadString;
   Model      := Stream.ReadString;
   ApiBase    := Stream.ReadString;
@@ -119,13 +119,13 @@ begin
   TopP       := Stream.ReadDouble;
   TopK       := Stream.ReadInteger;
   MaxTokens  := Stream.ReadInteger;
-  Stream.ReadPaddingDef;
+  Stream.ReadPadding;
 end;
 
 
-procedure TLLMObject.Save(Stream: TCubicBuffStream2);
+procedure TLLMObject.Save(Stream: TLightStream);
 begin
-  Stream.WriteHeader(StreamSignature, 1);  // Header & version number
+  Stream.WriteHeader(ClassSignature, 1);  // Header & version number
   Stream.WriteString (ApiKey     );
   Stream.WriteString (Model      );
   Stream.WriteString (ApiBase    );
@@ -134,7 +134,7 @@ begin
   Stream.WriteDouble (TopP       );
   Stream.WriteInteger(TopK       );
   Stream.WriteInteger(MaxTokens  );
-  Stream.WritePaddingDef;
+  Stream.WritePadding;
 end;
 
 

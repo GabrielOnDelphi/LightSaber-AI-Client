@@ -3,7 +3,7 @@ UNIT AiHistory;
 INTERFACE
 
 USES
-  System.SysUtils, System.Generics.Collections, LightCore.StreamBuff2;
+  System.SysUtils, System.Generics.Collections, LightCore.StreamBuff;
 
 TYPE
   // Enum to differentiate between text and file data parts in chat history
@@ -16,7 +16,7 @@ TYPE
   // Represents a single part of a chat message (text or file)
   TChatPart = class
    private
-     CONST StreamSignature: AnsiString= 'TChatPart';
+     CONST ClassSignature: AnsiString= 'TChatPart';
    public
      ChatType : TChatType;
      Text     : string;      // Used if PartType is cptText.
@@ -25,20 +25,20 @@ TYPE
      Width    : integer;
      Height   : integer;     // Width and height of the original input image. Used if PartType is cptFile.
 
-     procedure Load(Stream: TCubicBuffStream2); virtual;
-     procedure Save(Stream: TCubicBuffStream2); virtual;
+     procedure Load(Stream: TLightStream); virtual;
+     procedure Save(Stream: TLightStream); virtual;
      constructor Create; virtual;
   end;
 
 
   TChatParts = class(TObjectList<TChatPart>)
    private
-     CONST StreamSignature: AnsiString= 'TChatParts';
+     CONST ClassSignature: AnsiString= 'TChatParts';
    public
      function FileExists(FileName: string): Boolean;
 
-     procedure Load(Stream: TCubicBuffStream2); virtual; abstract;
-     procedure Save(Stream: TCubicBuffStream2); virtual; abstract;
+     procedure Load(Stream: TLightStream); virtual; abstract;
+     procedure Save(Stream: TLightStream); virtual; abstract;
      procedure ReverseOrder;
   end;
 
@@ -61,9 +61,9 @@ end;
 {-------------------------------------------------------------------------------------------------------------
    TChatPart
 -------------------------------------------------------------------------------------------------------------}
-procedure TChatPart.Load(Stream: TCubicBuffStream2);
+procedure TChatPart.Load(Stream: TLightStream);
 begin
-  Stream.ReadHeader(StreamSignature, 1);
+  Stream.ReadHeader(ClassSignature, 1);
 
   ChatType := TChatType(Stream.ReadInteger);
   Text     := Stream.ReadString;
@@ -76,9 +76,9 @@ begin
 end;
 
 
-procedure TChatPart.Save(Stream: TCubicBuffStream2);
+procedure TChatPart.Save(Stream: TLightStream);
 begin
-  Stream.WriteHeader(StreamSignature, 1);
+  Stream.WriteHeader(ClassSignature, 1);
 
   Stream.WriteInteger(Ord(ChatType));
   Stream.WriteString(Text);

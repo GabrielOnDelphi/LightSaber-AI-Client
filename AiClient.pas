@@ -14,7 +14,7 @@ INTERFACE
 USES
   System.SysUtils, System.Classes, System.Net.HttpClient, System.Net.HttpClientComponent, System.StrUtils,
   System.JSON, System.Generics.Collections, System.Rtti, System.IOUtils, System.TypInfo,
-  LightCore.StreamBuff2, AiHistory, AiLLM;
+  LightCore.StreamBuff, AiHistory, AiLLM;
 
 TYPE
   // Record to hold the structured response from the Gemini API
@@ -39,14 +39,14 @@ TYPE
   // Client for interacting with AI APIs
   TAiClient = class
   private
-    CONST StreamSignature: AnsiString= 'TAiClient';
+    CONST ClassSignature: AnsiString= 'TAiClient';
     function  finishReason2String(FinishReason: string): string;
     function  getHttpErrorMessage(StatusCode: Integer): string;
     function  detectErrorType(Response: string): string;
     procedure uploadFile(InputFile: TChatPart);
 
-    procedure Load(Stream: TCubicBuffStream2);   overload;
-    procedure Save(Stream: TCubicBuffStream2);   overload;
+    procedure Load(Stream: TLightStream);   overload;
+    procedure Save(Stream: TLightStream);   overload;
   protected
     function  postHttpRequest(BodyJSON: TJSONObject): TAIResponse; // Optional: Max tokens in response
   public
@@ -443,7 +443,7 @@ procedure TAiClient.Load(FileName: string);
 begin
   if NOT FileExists(FileName) then EXIT;
 
-  VAR Stream:= TCubicBuffStream2.CreateRead(FileName);
+  VAR Stream:= TLightStream.CreateRead(FileName);
   TRY
     Load(Stream);
   FINALLY
@@ -454,7 +454,7 @@ end;
 
 procedure TAiClient.Save(FileName: string);
 begin
-  VAR Stream:= TCubicBuffStream2.CreateWrite(FileName);
+  VAR Stream:= TLightStream.CreateWrite(FileName);
   TRY
     Save(Stream);   
   FINALLY
@@ -463,17 +463,17 @@ begin
 end;
 
 
-procedure TAiClient.Load(Stream: TCubicBuffStream2);
+procedure TAiClient.Load(Stream: TLightStream);
 begin
-  Stream.ReadHeader(StreamSignature, 1);
+  Stream.ReadHeader(ClassSignature, 1);
   TokensTotal:= Stream.ReadInteger;
   Stream.ReadPaddingE(12);
 end;
 
 
-procedure TAiClient.Save(Stream: TCubicBuffStream2);
+procedure TAiClient.Save(Stream: TLightStream);
 begin
-  Stream.WriteHeader(StreamSignature, 1);
+  Stream.WriteHeader(ClassSignature, 1);
   Stream.WriteInteger(TokensTotal);
   Stream.WritePadding(12);
 end;
