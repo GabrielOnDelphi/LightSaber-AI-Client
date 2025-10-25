@@ -17,7 +17,7 @@ TYPE
   TLLMObject = class
    private
     CONST ClassSignature: AnsiString= 'TLLMObject';
-    procedure Load(Stream: TLightStream);    overload;
+    function  Load(Stream: TLightStream): Boolean;    overload;
     procedure Save(Stream: TLightStream);    overload;
    public
     ApiKey      : string;
@@ -86,7 +86,7 @@ end;
 -------------------------------------------------------------------------------------------------------------}
 procedure TLLMObject.Load(FileName: string);
 begin
-  if NOT FileExists(FileName) then EXIT;
+  if NOT FileExists(FileName) then EXIT;  // The file does not exist on first startup
   VAR Stream:= TLightStream.CreateRead(FileName);
   TRY
     Load(Stream);
@@ -108,9 +108,10 @@ end;
 
 
 
-procedure TLLMObject.Load(Stream: TLightStream);
+function TLLMObject.Load(Stream: TLightStream): Boolean;
 begin
-  Stream.ReadHeader(ClassSignature, 1);
+  Result:= Stream.ReadHeader(ClassSignature, 2);
+  if NOT Result then EXIT;
   ApiKey     := Stream.ReadString;
   Model      := Stream.ReadString;
   ApiBase    := Stream.ReadString;
@@ -125,7 +126,7 @@ end;
 
 procedure TLLMObject.Save(Stream: TLightStream);
 begin
-  Stream.WriteHeader(ClassSignature, 1);  // Header & version number
+  Stream.WriteHeader(ClassSignature, 2);  // Header & version number
   Stream.WriteString (ApiKey     );
   Stream.WriteString (Model      );
   Stream.WriteString (ApiBase    );

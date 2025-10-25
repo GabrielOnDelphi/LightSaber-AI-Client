@@ -441,7 +441,7 @@ end;
 
 procedure TAiClient.Load(FileName: string);
 begin
-  if NOT FileExists(FileName) then EXIT;
+  if NOT FileExists(FileName) then EXIT;  // The file does not exist on first run
 
   VAR Stream:= TLightStream.CreateRead(FileName);
   TRY
@@ -465,15 +465,15 @@ end;
 
 procedure TAiClient.Load(Stream: TLightStream);
 begin
-  Stream.ReadHeader(ClassSignature, 1);
+  if NOT Stream.ReadHeader(ClassSignature, 2) then EXIT;
   TokensTotal:= Stream.ReadInteger;
-  Stream.ReadPaddingE(12);
+  Stream.ReadPadding(12);
 end;
 
 
 procedure TAiClient.Save(Stream: TLightStream);
 begin
-  Stream.WriteHeader(ClassSignature, 1);
+  Stream.WriteHeader(ClassSignature, 2);
   Stream.WriteInteger(TokensTotal);
   Stream.WritePadding(12);
 end;

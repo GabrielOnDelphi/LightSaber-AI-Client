@@ -72,7 +72,7 @@ begin
   Width    := Stream.ReadInteger;
   Height   := Stream.ReadInteger;
 
-  Stream.ReadPaddingE(4);
+  Stream.ReadPadding(4);
 end;
 
 
