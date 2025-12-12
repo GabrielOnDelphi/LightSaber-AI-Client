@@ -10,7 +10,7 @@ UNIT AIUtils;
 INTERFACE
 
 USES
-  System.SysUtils, System.Types;
+  posix.UniStd, System.SysUtils, System.Types;
 
 
 // Log
@@ -62,10 +62,10 @@ end;
 function GetBackupJsonFullName(ShortFileName: string; AppendDate: Boolean= FALSE): string;
 begin
   if AppDataCore.RunningHome
-  then Result:= AppDataCore.ExeFolder
+  then Result:= Appdatacore.AppFolder
   else Result:= AppDataCore.AppDataFolder;
 
-  Result:= Result+ 'AI Answers\' + ShortFileName;
+  Result:= Result+ Trail('AI Answers') + ShortFileName;
 
   if AppendDate
   then Result:= Result+ ' - ' + DateTimeToStr_IO;
