@@ -65,8 +65,8 @@ begin
 
   // Read secret API key (for lazy people)
   if (ApiKey = '')
-  AND FileExists(AppDataCore.ExeFolder+ 'SecretKey.INI')
-  then ApiKey:= StringFromFile(AppDataCore.ExeFolder+ 'SecretKey.INI');
+  AND FileExists(Appdatacore.AppFolder+ 'SecretKey.INI')
+  then ApiKey:= StringFromFile(Appdatacore.AppFolder+ 'SecretKey.INI');
 end;
 
  
