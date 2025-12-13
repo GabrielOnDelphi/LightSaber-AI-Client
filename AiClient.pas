@@ -322,7 +322,7 @@ begin
 
     if HttpResponse.StatusCode <> 200 then
     begin
-      Result.ErrorMsg:= 'AI response status: '+IntToStr(HttpResponse.StatusCode)+'('+getHttpErrorMessage(HttpResponse.StatusCode)+') - ' + detectErrorType(HttpResponse.ContentAsString)+ '. ' + HttpResponse.ContentAsString;
+      Result.ErrorMsg:= 'AI response status: '+IntToStr(HttpResponse.StatusCode)+' ('+getHttpErrorMessage(HttpResponse.StatusCode)+') - ' + detectErrorType(HttpResponse.ContentAsString)+ '. ' + HttpResponse.ContentAsString;
       Exit;
     end;
 
