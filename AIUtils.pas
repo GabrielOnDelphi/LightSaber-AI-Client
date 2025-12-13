@@ -10,12 +10,12 @@ UNIT AIUtils;
 INTERFACE
 
 USES
-  posix.UniStd, System.SysUtils, System.Types;
+  //posix.UniStd,
+  System.SysUtils, System.Types;
 
 
 // Log
-function  HasError  (ErrMsg: string): Boolean;
-procedure PrintError(ErrMsg: string);
+function  PrintError(ErrMsg: string): Boolean;
 
 // Mime
 function  Extension2MimeType(const FilePath: string): string;
@@ -41,19 +41,12 @@ USES
 -------------------------------------------------------------------------------------------------------------}
 
 // If the ErrMsg is not empty, returns true AND shows the error in the log
-function HasError(ErrMsg: string): Boolean;
+function PrintError(ErrMsg: string): Boolean;
 begin
   Result:= ErrMsg <> '';
   if Result
   then AppDataCore.RamLog.AddError(ErrMsg);
 end;
-
-procedure PrintError(ErrMsg: string);
-begin
-  HasError(ErrMsg);
-end;
-
-
 
 
 {-------------------------------------------------------------------------------------------------------------
