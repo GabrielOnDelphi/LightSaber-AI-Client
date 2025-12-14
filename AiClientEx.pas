@@ -17,9 +17,6 @@ TYPE
 
   TAiClientEx = class(TAiClient)
   private
-    // JSON SYSTEM
-    function makeGenerationConfig (CONST FilePath: string ): TJSONPair;
-
     // JSON CONTENTS
     function makeContentsSingleTurn (TextPart: TJSONObject; InputFiles: TChatParts; Role: TChatRole): TJsonPair;
     function makeFileDataParts      (InputFiles: TChatParts): TContentFileParts;
@@ -92,8 +89,8 @@ begin
     then SaveAiResponse(JsonShortName, Result.ExtractedJSONObj.ToString)    // Save JSON to disk
   FINALLY
     FreeAndNil(BodyJSON);     // BodyJSON owns the cloned pairs, so freeing it will free the cloned content
-    FreeAndNil(Contents);
     FreeAndNil(LLMConfig);
+    FreeAndNil(Contents);
   END;
 end;
 
@@ -209,53 +206,6 @@ begin
   if Result
   then ContentsArray.AddElement(SingleTurnContents)
   else FreeAndNil(SingleTurnContents); // If we can't find the contents array, free the objects we created
-end;
-
-
-
-
-{-------------------------------------------------------------------------------------------------------------
-   JSON GenConfig
--------------------------------------------------------------------------------------------------------------}
-
-function TAiClientEx.makeGenerationConfig(CONST FilePath: String): TJSONPair;
-VAR
-  ResponseSchema: TJSONObject;
-  GenerationConfigObj: TJSONObject;
-  ThinkingConfig25: TJSONObject;
-CONST
-  ResponseMimeType = 'application/json';
-begin
-  ResponseSchema     := nil;
-  ThinkingConfig25   := NIL;
-  GenerationConfigObj:= nil;
-
-  TRY
-    ResponseSchema:= File2Json(FilePath);              // Transfer ownership to the pair, so don't free this object here
-
-    // This is only for Gemini 2.5
-    ThinkingConfig25 := TJSONObject.Create;                // Transfer ownership to the pair, so don't free this object here
-    ThinkingConfig25.AddPair('thinkingBudget', 0);
-    ThinkingConfig25.AddPair('includeThoughts', FALSE);
-
-    // This is for both 2.0 and 2.5
-    GenerationConfigObj := TJSONObject.Create;             // Transfer ownership to the pair, so don't free this object here
-    GenerationConfigObj.AddPair('responseMimeType', ResponseMimeType);
-    GenerationConfigObj.AddPair('responseSchema',   ResponseSchema);
-    GenerationConfigObj.AddPair('candidateCount',   LLM.CandidateCnt);
-    GenerationConfigObj.AddPair('maxOutputTokens',  LLM.MaxTokens);
-    GenerationConfigObj.AddPair('temperature',      LLM.Temperature);
-    GenerationConfigObj.AddPair('topP',             LLM.TopP);
-    GenerationConfigObj.AddPair('topK',             LLM.TopK);
-    GenerationConfigObj.AddPair('thinkingConfig',   ThinkingConfig25);
-
-    Result:= TJSONPair.Create('generationConfig', GenerationConfigObj);
-  EXCEPT
-    FreeAndNil(ResponseSchema);
-    FreeAndNil(ThinkingConfig25);
-    FreeAndNil(GenerationConfigObj);
-    RAISE;
-  END;
 end;
 
 
