@@ -48,13 +48,15 @@ TYPE
     procedure Load(Stream: TLightStream);   overload;
     procedure Save(Stream: TLightStream);   overload;
   protected
-    function  postHttpRequest(BodyJSON: TJSONObject): TAIResponse; // Optional: Max tokens in response
+    function postHttpRequest(BodyJSON: TJSONObject): TAIResponse; // Optional: Max tokens in response
+    function makeGenerationConfig(const FilePath: String): TJSONPair;
   public
     LLM: TLLMObject;
     TokensTotal: Integer;    // Total used tokens for ALL prompts
 
     constructor Create; virtual;
     destructor  Destroy; override;
+    function TestConnection: TAIResponse;
 
     procedure UploadFiles(InputFiles: TChatParts);
     procedure Load(FileName: string);  overload;
@@ -65,7 +67,7 @@ TYPE
 
 IMPLEMENTATION
 USES
-  AiLLMGemini, AiUtils, LightCore.AppData;
+  JsonUtils, AiLLMGemini, AiUtils, LightCore.AppData, LightCore;
 
 
 
@@ -295,11 +297,22 @@ begin
   try
     HttpClient    := TNetHTTPClient.Create(nil);      // Freed by: Finally
     Request       := TNetHTTPRequest.Create(nil);     // Freed by: Finally
-    Request.Client:= HttpClient;
-
-    // No need to clear CustomHeaders here; setting Content-Type is sufficient.
-    Request.CustomHeaders['Content-Type'] := 'application/json';
     RequestBody:= TStringStream.Create(BodyJSON.ToString, TEncoding.UTF8);
+  except
+    on E: Exception do
+    begin
+      Result.ErrorMsg := 'Failed to initialize HTTP client: ' + E.Message;
+      // If creation fails, we must ensure we don't leak partial creations in the Finally block
+      // But FreeAndNil is safe on nil, so we proceed to Finally.
+    end;
+  end;
+
+  // 2. EXECUTE AND PROCESS (Protected by Finally)
+  try
+    if Result.ErrorMsg <> '' then Exit; // Creation failed, exit (Finally will run)
+
+    Request.Client:= HttpClient;
+    Request.CustomHeaders['Content-Type'] := 'application/json';
 
     // Construct URL using LLM properties
     TRY
@@ -323,6 +336,7 @@ begin
     if HttpResponse.StatusCode <> 200 then
     begin
       Result.ErrorMsg:= 'AI response status: '+IntToStr(HttpResponse.StatusCode)+' ('+getHttpErrorMessage(HttpResponse.StatusCode)+') - ' + detectErrorType(HttpResponse.ContentAsString)+ '. ' + HttpResponse.ContentAsString;
+      Result.ErrorMsg:= StringReplace(Result.ErrorMsg, '\n', sLineBreak, [rfReplaceAll]);
       Exit;
     end;
 
@@ -343,7 +357,7 @@ begin
       Exit;
     end;
 
-    // Extract token usage information
+    // Process the token usage, candidates, etc
     if RespJSON.TryGetValue<TJSONObject>('usageMetadata', UsageMetadata) then
     begin
       Result.TokensPrompt     := UsageMetadata.GetValue<Integer>('promptTokenCount', 0);
@@ -373,7 +387,7 @@ begin
 
     // SafetyRatings might be missing, so use GetValue with a default
     if Candidate.TryGetValue<TJSONArray>('safetyRatings', SafetyArr)
-	then Result.FSafetyRatings := SafetyArr.Clone as TJSONArray
+    then Result.FSafetyRatings := SafetyArr.Clone as TJSONArray
     else Result.FSafetyRatings := TJSONArray.Create;
 
     // Extract the text content
@@ -396,21 +410,17 @@ begin
       end
     else
       begin
-        Result.ErrorMsg := 'No content found in candidate response';
+        Result.ErrorMsg:= 'No content found in candidate response';
         Exit;
       end;
-
-  except
-    on E: Exception do
-      Result.ErrorMsg := 'Unexpected error in GetResponse: ' + E.Message;
-  end;
-
-  // Cleanup
-  FreeAndNil(RequestBody);
-  FreeAndNil(Request);
-  FreeAndNil(HttpClient);
-  FreeAndNil(RespJSON);
-end;
+  finally
+    // This block is guaranteed to run, even if we called Exit above.
+    FreeAndNil(RespJSON);
+    FreeAndNil(RequestBody);
+    FreeAndNil(Request);
+    FreeAndNil(HttpClient);
+  end
+end;  
 
 
 
@@ -476,6 +486,110 @@ begin
   Stream.WriteHeader(ClassSignature, 2);
   Stream.WriteInteger(TokensTotal);
   Stream.WritePadding(12);
+end;
+
+
+
+
+
+
+{-------------------------------------------------------------------------------------------------------------
+   JSON GenConfig
+-------------------------------------------------------------------------------------------------------------}
+
+function TAiClient.makeGenerationConfig(CONST FilePath: String): TJSONPair;
+VAR
+  ResponseSchema: TJSONObject;
+  GenerationConfigObj: TJSONObject;
+  ThinkingConfig25: TJSONObject;
+CONST
+  ResponseMimeType = 'application/json';
+begin
+  ResponseSchema     := nil;
+  ThinkingConfig25   := NIL;
+  GenerationConfigObj:= nil;
+
+  TRY
+    // This is only for Gemini 2.5
+    ThinkingConfig25 := TJSONObject.Create;
+    ThinkingConfig25.AddPair('thinkingBudget', 0);
+    ThinkingConfig25.AddPair('includeThoughts', FALSE);
+
+    // This is for both Gemini 2.0 and 2.5
+    GenerationConfigObj := TJSONObject.Create;
+    GenerationConfigObj.AddPair('responseMimeType', ResponseMimeType);
+    GenerationConfigObj.AddPair('candidateCount',   LLM.CandidateCnt);
+    GenerationConfigObj.AddPair('maxOutputTokens',  LLM.MaxTokens);
+    GenerationConfigObj.AddPair('temperature',      LLM.Temperature);
+    GenerationConfigObj.AddPair('topP',             LLM.TopP);
+    GenerationConfigObj.AddPair('topK',             LLM.TopK);
+    GenerationConfigObj.AddPair('thinkingConfig',   ThinkingConfig25);
+
+    // File path is empty when we just ping the AI to see if the connection is fine
+    if FilePath <> '' then
+      begin
+        ResponseSchema:= File2Json(FilePath);
+        GenerationConfigObj.AddPair('responseSchema', ResponseSchema);
+      end;
+
+    Result:= TJSONPair.Create('generationConfig', GenerationConfigObj);
+  EXCEPT
+    FreeAndNil(ResponseSchema);
+    FreeAndNil(ThinkingConfig25);
+    FreeAndNil(GenerationConfigObj);
+    RAISE;
+  END;
+end;
+
+
+function TAiClient.TestConnection: TAIResponse;
+var
+  BodyJSON: TJSONObject;
+  ContentsArray: TJSONArray;
+  ContentObject: TJSONObject;
+  PartsArray: TJSONArray;
+  TextPart: TJSONObject;
+begin
+  BodyJSON:= nil;
+  Result:= nil;
+  try
+    try
+      // 1. Create the innermost part: {"text": "test"}
+      TextPart := TJSONObject.Create;
+      TextPart.AddPair('text', 'Hello AI!');
+
+      // 2. Create the parts array: [{"text": "test"}]
+      PartsArray := TJSONArray.Create;
+      PartsArray.AddElement(TextPart); // PartsArray now owns TextPart
+
+      // 3. Create the content object: {"role": "user", "parts": [...]}
+      ContentObject := TJSONObject.Create;
+      ContentObject.AddPair('role', 'user');
+      ContentObject.AddPair('parts', PartsArray); // ContentObject now owns PartsArray
+
+      // 4. Create the contents array: [ { ... } ]
+      ContentsArray := TJSONArray.Create;
+      ContentsArray.AddElement(ContentObject); // ContentsArray now owns ContentObject
+
+      // 5. Create the Body: {"contents": [ ... ] }
+      BodyJSON := TJSONObject.Create;
+      BodyJSON.AddPair('contents', ContentsArray); // BodyJSON now owns ContentsArray
+
+      // 6. Send Request
+      Result:= postHttpRequest(BodyJSON);
+
+    except
+      on E: Exception do
+      begin
+        if Result = NIL
+        then Result:= TAIResponse.Create;
+        Result.ErrorMsg:= 'Exception during connection test setup: ' + E.Message;
+      end;
+    end;
+    
+  finally
+    FreeAndNil(BodyJSON); // BodyJSON owns all the child objects (Arrays, Parts, etc.), so freeing it frees everything.
+  end;
 end;
 
 
