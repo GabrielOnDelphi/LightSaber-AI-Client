@@ -16,7 +16,7 @@ TYPE
     edtApiKey      : TEdit;
     edtUploadBase  : TEdit;
     Label1         : TLabel;
-    Label2         : TLabel;
+    lblApiBase: TLabel;
     Label3         : TLabel;
     Label4         : TLabel;
     layBottom      : TLayout;
@@ -29,6 +29,15 @@ TYPE
     spnTemperature : TSpinBox;
     spnTopK        : TSpinBox;
     spnTopP        : TSpinBox;
+    Layout1: TLayout;
+    Layout2: TLayout;
+    Layout3: TLayout;
+    Layout4: TLayout;
+    Button1: TButton;
+    Layout5: TLayout;
+    Layout6: TLayout;
+    Layout7: TLayout;
+    Layout8: TLayout;
     procedure btnCancelClick         (Sender: TObject);
     procedure btnOKClick             (Sender: TObject);
     procedure FormClose              (Sender: TObject; var Action: TCloseAction);
@@ -36,6 +45,7 @@ TYPE
     procedure spnTemperatureCanFocus (Sender: TObject; var ACanFocus: Boolean);
     procedure spnTopKCanFocus        (Sender: TObject; var ACanFocus: Boolean);
     procedure spnTopPCanFocus        (Sender: TObject; var ACanFocus: Boolean);
+    procedure Button1Click(Sender: TObject);
   private
     Gemini: TAiClient;
     procedure Gui2Obj;
@@ -46,8 +56,9 @@ TYPE
 
 
 IMPLEMENTATION {$R *.fmx}
-
-
+{$R *.LgXhdpiPh.fmx ANDROID}
+{$R *.XLgXhdpiTb.fmx ANDROID}
+{$R *.iPhone55in.fmx IOS}
 
 class procedure TfrmGemini.ShowFormModal(aGemini: TAiClient);
 VAR frmGemini: TfrmGemini;
@@ -77,6 +88,16 @@ begin
 end;
 
 
+procedure TfrmGemini.Button1Click(Sender: TObject);
+VAR AIResponse: TAIResponse;
+begin
+  Gui2Obj;
+  AIResponse:= Gemini.TestConnection;
+  if AIResponse.ErrorMsg = ''
+  then ShowMessage('Connection to the AI: OK')
+  else ShowMessage(AIResponse.ErrorMsg);
+  FreeAndNil(AIResponse);
+end;
 
 
 {-------------------------------------------------------------------------------------------------------------
@@ -90,8 +111,8 @@ begin
 
   // Populating models
   cmbModel.Items.Clear;
-  for ModelName in Gemini.LLM.AvailableModels do
-    cmbModel.Items.Add(ModelName);
+  for ModelName in Gemini.LLM.AvailableModels
+    do cmbModel.Items.Add(ModelName);
 
   // Select the current model
   iModelIndex := cmbModel.Items.IndexOf(Gemini.LLM.Model);
@@ -153,6 +174,7 @@ procedure TfrmGemini.spnTopPCanFocus(Sender: TObject; var ACanFocus: Boolean);
 begin
   lblInfo.Text:= Gemini.LLM.HintTopP;
 end;
+
 
 
 end.

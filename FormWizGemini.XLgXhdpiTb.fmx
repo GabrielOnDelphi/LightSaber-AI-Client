@@ -1,0 +1,91 @@
+inherited frmGemini_XLgXhdpiTb: TfrmGemini_XLgXhdpiTb
+  ClientHeight = 1255
+  ClientWidth = 800
+  DesignerMasterStyle = 0
+  inherited lblInfo: TLabel
+    Position.Y = 1203.000000000000000000
+    Size.Width = 794.000000000000000000
+  end
+  inherited layBottom: TLayout
+    Position.Y = 1222.000000000000000000
+    Size.Width = 800.000000000000000000
+    inherited btnCancel: TButton
+      Position.X = 631.000000000000000000
+    end
+    inherited btnOK: TButton
+      Position.X = 717.000000000000000000
+    end
+  end
+  inherited Layout1: TLayout
+    Size.Width = 764.000000000000000000
+    inherited spnTemperature: TSpinBox
+      Position.Y = 4.000000000000000000
+      Size.Height = 32.000000000000000000
+    end
+  end
+  inherited Layout2: TLayout
+    Size.Width = 764.000000000000000000
+    inherited spnTopP: TSpinBox
+      Position.Y = 4.000000000000000000
+      Size.Height = 32.000000000000000000
+    end
+  end
+  inherited Layout3: TLayout
+    Size.Width = 764.000000000000000000
+    inherited spnTopK: TSpinBox
+      Position.Y = 4.000000000000000000
+      Size.Height = 32.000000000000000000
+    end
+  end
+  inherited Layout4: TLayout
+    Size.Width = 764.000000000000000000
+    inherited spnMaxTokens: TSpinBox
+      Position.Y = 4.000000000000000000
+      Size.Height = 32.000000000000000000
+    end
+  end
+  inherited Layout6: TLayout
+    Size.Width = 764.000000000000000000
+    inherited lblApiBase: TLabel
+      Size.Width = 728.000000000000000000
+    end
+    inherited edtApiBase: TEdit
+      Margins.Bottom = 3.000000000000000000
+      Size.Width = 728.000000000000000000
+      Size.Height = 32.000000000000000000
+    end
+  end
+  inherited Layout7: TLayout
+    Size.Width = 764.000000000000000000
+    inherited cmbModel: TComboBox
+      Margins.Bottom = 3.000000000000000000
+      Size.Width = 728.000000000000000000
+      Size.Height = 32.000000000000000000
+    end
+    inherited Label4: TLabel
+      Size.Width = 728.000000000000000000
+    end
+  end
+  inherited Layout5: TLayout
+    Size.Width = 764.000000000000000000
+    inherited edtApiKey: TEdit
+      Margins.Bottom = 3.000000000000000000
+      Size.Width = 728.000000000000000000
+      Size.Height = 32.000000000000000000
+    end
+    inherited Label1: TLabel
+      Size.Width = 728.000000000000000000
+    end
+  end
+  inherited Layout8: TLayout
+    Size.Width = 764.000000000000000000
+    inherited Label3: TLabel
+      Size.Width = 728.000000000000000000
+    end
+    inherited edtUploadBase: TEdit
+      Margins.Bottom = 3.000000000000000000
+      Size.Width = 728.000000000000000000
+      Size.Height = 32.000000000000000000
+    end
+  end
+end
