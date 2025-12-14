@@ -11,6 +11,7 @@ UNIT AiLLMGemini;
      Gemini 2.0 Flash -> 400000 chars = 16cent = 64 pages at 6k chars
 
      https://ai.google.dev/gemini-api/docs/pricing
+     https://aistudio.google.com/usage?timeRange=last-28-days&tab=rate-limit&project=gen-lang-client-0659800905         // Rate limit & Billing
 -------------------------------------------------------------------------------------------------------------}
 
 INTERFACE
@@ -39,22 +40,22 @@ USES
 CONST
   DEFAULT_API_BASE    = 'https://generativelanguage.googleapis.com/v1beta';
   DEFAULT_UPLOAD_BASE = 'https://generativelanguage.googleapis.com/upload/v1beta';
-  DEFAULT_MODEL       = 'gemini-2.0-flash';
+  DEFAULT_MODEL       = 'gemini-2.5-flash';
 
 
 constructor TLLMGemini.Create;
 begin
-  inherited Create;
-
-  // Gemini default settings
+  // Gemini default settings. Must be above Inherited because that calls "Load"
   Model       := DEFAULT_MODEL;
   ApiBase     := DEFAULT_API_BASE;
   UploadBase  := DEFAULT_UPLOAD_BASE;
 
-  AvailableModels.Add('gemini-2.5-flash');  //ToDo -oCR: find list of all possible models
+  inherited Create;
+
+  AvailableModels.Add('gemini-2.5-flash');   //ToDo -oCR: find list of all possible models
   AvailableModels.Add('gemini-2.5-pro');
-  AvailableModels.Add('gemini-2.0-flash');
-  AvailableModels.Add('gemini-2.0-pro');
+  AvailableModels.Add('gemini-2.0-flash');   // This is available in the Free tier but it says "Limit reached"
+  AvailableModels.Add('gemini-2.0-pro');     // This is not available at all in the Free tier
 
   HintTemp  := 'Controls the randomness of the generated text.'+ CRLF
              + 'A lower temperature (e.g., 0.2) results in more predictable, focused, and less creative outputs.'+ CRLF
