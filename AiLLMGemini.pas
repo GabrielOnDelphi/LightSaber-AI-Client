@@ -45,7 +45,7 @@ CONST
 
 constructor TLLMGemini.Create;
 begin
-  // Gemini default settings. Must be above Inherited because that calls "Load"
+  // Gemini default settings.     Must be before Inherited because Inherited calls "Load"!
   Model       := DEFAULT_MODEL;
   ApiBase     := DEFAULT_API_BASE;
   UploadBase  := DEFAULT_UPLOAD_BASE;
