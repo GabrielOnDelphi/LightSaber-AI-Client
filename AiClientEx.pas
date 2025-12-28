@@ -10,7 +10,7 @@ UNIT AiClientEx;
 INTERFACE
 USES
    System.JSON, System.SysUtils, System.Generics.Collections,
-   AiHistory, AiClient, AiLLM;
+   AiHistory, AiClient;
 
 TYPE
   TContentFileParts= TObjectList<TJSONObject>;
@@ -33,7 +33,7 @@ TYPE
 
 IMPLEMENTATION
 USES
-   AiUtils, LightCore.AppData, JsonUtils;
+   AiUtils, LightCore.AppData;
 
 
 
@@ -78,7 +78,7 @@ begin
     BodyJSON.AddPair(TJSONPair(Contents.Clone));
     BodyJSON.AddPair(TJSONPair(LLMConfig.Clone));
 
-    // Make API call
+    // Make API call (one per section)
     Result:= postHttpRequest(BodyJSON);
 
     // Log errors

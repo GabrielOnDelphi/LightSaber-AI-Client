@@ -3,9 +3,10 @@ unit FormWizGemini;
 INTERFACE
 
 USES
-  System.SysUtils, System.Types, System.Classes, system.UITypes,
-  FMX.Types, FMX.Dialogs, FMX.Controls, FMX.Forms, FMX.StdCtrls, FMX.Controls.Presentation, FMX.Edit, FMX.SpinBox, FMX.ListBox, FMX.Layouts, FMX.EditBox,
-  AiLLM, AiClient, LightFmx.Common.AppData.Form, LightFmx.Common.AppData;
+  System.SysUtils, System.Classes, system.UITypes,
+  FMX.Types, FMX.Dialogs, FMX.Forms, FMX.StdCtrls, FMX.Edit, FMX.SpinBox, FMX.ListBox, FMX.Layouts, FMX.EditBox,
+  AiLLM, AiClient, LightFmx.Common.AppData.Form, LightFmx.Common.AppData, FMX.Controls,
+  FMX.Controls.Presentation;
 
 TYPE
   TfrmGemini = class(TLightForm)

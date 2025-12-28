@@ -10,7 +10,7 @@ UNIT JsonUtils;
 INTERFACE
 
 USES
-   System.JSON, System.SysUtils, System.IOUtils, System.Generics.Collections;
+   System.JSON, System.SysUtils;
 
 
 function File2Json   (const FilePath  : String): TJSONObject;
@@ -19,7 +19,7 @@ function MakeTextPart(const TextPrompt: String): TJSONObject;
 
 IMPLEMENTATION
 USES
-  LightCore.AppData, LightCore.TextFile, LightCore.IO;
+  LightCore.TextFile;
 
 
 

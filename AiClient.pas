@@ -67,7 +67,7 @@ TYPE
 
 IMPLEMENTATION
 USES
-  JsonUtils, AiLLMGemini, AiUtils, LightCore.AppData, LightCore;
+  JsonUtils, AiLLMGemini, AiUtils, LightCore.AppData;
 
 
 
