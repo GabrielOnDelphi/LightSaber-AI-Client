@@ -55,7 +55,7 @@ end;
 function GetBackupJsonFullName(ShortFileName: string; AppendDate: Boolean= FALSE): string;
 begin
   if AppDataCore.RunningHome
-  then Result:= Appdatacore.AppFolder
+  then Result:= AppDataCore.AppFolder
   else Result:= AppDataCore.AppDataFolder;
 
   Result:= Result+ Trail('AI Answers') + ShortFileName;
