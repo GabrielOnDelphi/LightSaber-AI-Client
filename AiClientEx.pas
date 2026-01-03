@@ -85,6 +85,7 @@ begin
     PrintError(Result.ErrorMsg);
 
     // Save output
+    //todo 1: make sure I don't save the files under the same name
     if Result.Valid
     then SaveAiResponse(JsonShortName, Result.ExtractedJSONObj.ToString)    // Save JSON to disk
   FINALLY
