@@ -18,31 +18,15 @@ inherited frmGemini_XLgXhdpiTb: TfrmGemini_XLgXhdpiTb
   end
   inherited Layout1: TLayout
     Size.Width = 764.000000000000000000
-    inherited spnTemperature: TSpinBox
-      Position.Y = 4.000000000000000000
-      Size.Height = 32.000000000000000000
-    end
   end
   inherited Layout2: TLayout
     Size.Width = 764.000000000000000000
-    inherited spnTopP: TSpinBox
-      Position.Y = 4.000000000000000000
-      Size.Height = 32.000000000000000000
-    end
   end
   inherited Layout3: TLayout
     Size.Width = 764.000000000000000000
-    inherited spnTopK: TSpinBox
-      Position.Y = 4.000000000000000000
-      Size.Height = 32.000000000000000000
-    end
   end
   inherited Layout4: TLayout
     Size.Width = 764.000000000000000000
-    inherited spnMaxTokens: TSpinBox
-      Position.Y = 4.000000000000000000
-      Size.Height = 32.000000000000000000
-    end
   end
   inherited Layout6: TLayout
     Size.Width = 764.000000000000000000

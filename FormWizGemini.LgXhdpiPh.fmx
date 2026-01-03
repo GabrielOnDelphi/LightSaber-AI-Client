@@ -26,16 +26,12 @@ inherited frmGemini_LgXhdpiPh: TfrmGemini_LgXhdpiPh
     end
     inherited spnTemperature: TSpinBox
       Position.X = 112.000000000000000000
-      Position.Y = 4.000000000000000000
-      Size.Height = 32.000000000000000000
     end
   end
   inherited Layout2: TLayout
     Size.Width = 414.000000000000000000
     inherited spnTopP: TSpinBox
       Position.X = 56.000000000000000000
-      Position.Y = 4.000000000000000000
-      Size.Height = 32.000000000000000000
     end
     inherited lblTopP: TLabel
       Margins.Left = 3.000000000000000000
@@ -47,8 +43,6 @@ inherited frmGemini_LgXhdpiPh: TfrmGemini_LgXhdpiPh
     Size.Width = 414.000000000000000000
     inherited spnTopK: TSpinBox
       Position.X = 56.000000000000000000
-      Position.Y = 4.000000000000000000
-      Size.Height = 32.000000000000000000
     end
     inherited lblTopK: TLabel
       Margins.Left = 3.000000000000000000
@@ -65,8 +59,6 @@ inherited frmGemini_LgXhdpiPh: TfrmGemini_LgXhdpiPh
     end
     inherited spnMaxTokens: TSpinBox
       Position.X = 103.000000000000000000
-      Position.Y = 4.000000000000000000
-      Size.Height = 32.000000000000000000
     end
   end
   inherited Layout6: TLayout

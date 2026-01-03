@@ -18,31 +18,15 @@ inherited frmGemini_iPhone55in: TfrmGemini_iPhone55in
   end
   inherited Layout1: TLayout
     Size.Width = 378.000000000000000000
-    inherited spnTemperature: TSpinBox
-      Position.Y = 5.000000000000000000
-      Size.Height = 30.000000000000000000
-    end
   end
   inherited Layout2: TLayout
     Size.Width = 378.000000000000000000
-    inherited spnTopP: TSpinBox
-      Position.Y = 5.000000000000000000
-      Size.Height = 30.000000000000000000
-    end
   end
   inherited Layout3: TLayout
     Size.Width = 378.000000000000000000
-    inherited spnTopK: TSpinBox
-      Position.Y = 5.000000000000000000
-      Size.Height = 30.000000000000000000
-    end
   end
   inherited Layout4: TLayout
     Size.Width = 378.000000000000000000
-    inherited spnMaxTokens: TSpinBox
-      Position.Y = 5.000000000000000000
-      Size.Height = 30.000000000000000000
-    end
   end
   inherited Layout6: TLayout
     Size.Width = 378.000000000000000000
