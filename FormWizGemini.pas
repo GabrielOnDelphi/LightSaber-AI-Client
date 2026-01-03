@@ -57,9 +57,7 @@ TYPE
 
 
 IMPLEMENTATION {$R *.fmx}
-{$R *.LgXhdpiPh.fmx ANDROID}
-{$R *.XLgXhdpiTb.fmx ANDROID}
-{$R *.iPhone55in.fmx IOS}
+
 
 class procedure TfrmGemini.ShowFormModal(aGemini: TAiClient);
 VAR frmGemini: TfrmGemini;
@@ -85,7 +83,7 @@ end;
 
 procedure TfrmGemini.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  Action := TCloseAction.caFree;
+  Action:= TCloseAction.caFree;
 end;
 
 
