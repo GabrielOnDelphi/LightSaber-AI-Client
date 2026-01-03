@@ -11,7 +11,7 @@ UNIT AiLLMGemini;
      Gemini 2.0 Flash -> 400000 chars = 16cent = 64 pages at 6k chars
 
      https://ai.google.dev/gemini-api/docs/pricing
-     https://aistudio.google.com/usage?timeRange=last-28-days&tab=rate-limit&project=gen-lang-client-0659800905         // Rate limit & Billing
+     https://aistudio.google.com/usage?timeRange=last-28-days&tab=rate-limit&project=gen-lang-client-0659800905    // Rate limit & Billing
 -------------------------------------------------------------------------------------------------------------}
 
 INTERFACE
