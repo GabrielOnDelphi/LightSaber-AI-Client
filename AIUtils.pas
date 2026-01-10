@@ -22,9 +22,11 @@ function  Extension2MimeType(const FilePath: string): string;
 function  ExtensionFromMimeType(const MimeType: string): string;
 
 // JSON
-procedure SaveAiResponse       (ShortFileName, Text: string);
-procedure DeleteResponseFile   (ShortFileName: string);
-function  GetBackupJsonFullName(ShortFileName: string; AppendDate: Boolean= FALSE): string;
+procedure SaveAiResponse       (CONST SchemaName, Text: string);
+procedure DeleteResponseFile   (CONST SchemaName: string);
+procedure DeleteResponseFiles  (CONST SchemaName: string);
+function  GetBackupJsonFullName(CONST SchemaName: string; AppendDate: Boolean= FALSE): string;
+
 
 // Gemini specific
 procedure Rescale(var BoundBox: TRectF; aWidth, aHeight: integer);
@@ -50,15 +52,15 @@ end;
 
 
 {-------------------------------------------------------------------------------------------------------------
-   JSON RESPONSE - SAVE TO DISK
+   AI JSON RESPONSES - SAVE TO DISK
 -------------------------------------------------------------------------------------------------------------}
-function GetBackupJsonFullName(ShortFileName: string; AppendDate: Boolean= FALSE): string;
+function GetBackupJsonFullName(CONST SchemaName: string; AppendDate: Boolean= FALSE): string;
 begin
   if AppDataCore.RunningHome
   then Result:= AppDataCore.AppFolder
   else Result:= AppDataCore.AppDataFolder;
 
-  Result:= Result+ Trail('AI Answers') + ShortFileName;
+  Result:= Result+ Trail('AI Answers') + SchemaName;
 
   if AppendDate
   then Result:= Result+ ' - ' + DateTimeToStr_IO;
@@ -67,19 +69,29 @@ begin
 end;
 
 
-procedure SaveAiResponse(ShortFileName, Text: string);
+procedure SaveAiResponse(CONST SchemaName, Text: string); // Note: the loading is happening in TItemLesson.StartMakeQuestionsAI, based on the Sw_LoadJsonSectionsFromFile constant
 begin
   if AppDataCore.RunningHome
-  then StringToFile(GetBackupJsonFullName(ShortFileName), Text);
+  then StringToFile(GetBackupJsonFullName(SchemaName), Text);
 end;
 
 
-procedure DeleteResponseFile(ShortFileName: string);
+procedure DeleteResponseFile(CONST SchemaName: string);
 begin
   if AppDataCore.RunningHome
-  then DeleteFile(GetBackupJsonFullName(ShortFileName));
+  then DeleteFile(GetBackupJsonFullName(SchemaName));
 end;
 
+
+// Clean up old question files before generating new ones
+procedure DeleteResponseFiles(CONST SchemaName: string);
+begin
+  for VAR i:= 0 to 40 do                                    // Delete up to 40 old question files (40 sections should be more than enough)
+    begin
+      VAR JsonFileName:= SchemaName+ IntToStr(i);
+      DeleteResponseFile(JsonFileName);
+    end;
+end;
 
 
 
