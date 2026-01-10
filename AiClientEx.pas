@@ -86,6 +86,7 @@ begin
 
     // Save output
     //todo 1: make sure I don't save the files under the same name
+    //Note: the loading is happening in TItemLesson.StartMakeQuestionsAI, based on the Sw_LoadJsonSectionsFromFile constant
     if Result.Valid
     then SaveAiResponse(JsonShortName, Result.ExtractedJSONObj.ToString)    // Save JSON to disk
   FINALLY
