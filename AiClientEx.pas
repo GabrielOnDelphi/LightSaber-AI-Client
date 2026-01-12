@@ -85,7 +85,7 @@ begin
     PrintError(Result.ErrorMsg);
 
     // Save output
-    //todo 1: make sure I don't save the files under the same name
+    //done: make sure I don't save the files under the same name
     //Note: the loading is happening in TItemLesson.StartMakeQuestionsAI, based on the Sw_LoadJsonSectionsFromFile constant
     if Result.Valid
     then SaveAiResponse(JsonShortName, Result.ExtractedJSONObj.ToString)    // Save JSON to disk
@@ -179,12 +179,10 @@ begin
 end;
 
 
-// addTurns2Contents4MultiTurnConversations
-// UNUSED!
-//
+
 // adds new (text) turns to the Contents part of an JSONBody from API Call
 // the input JSonObjects should be freed separately
-function TAiClientEx.addTurns2Contents(CallJsonBody: TJSONObject; TextPart: TJSONObject; Role: TChatRole): Boolean;
+function TAiClientEx.addTurns2Contents(CallJsonBody: TJSONObject; TextPart: TJSONObject; Role: TChatRole): Boolean;  // UNUSED! To be used in uPromts.pas
 var
   PartsArray: TJSONArray;
   TextPartClone: TJSONObject;
