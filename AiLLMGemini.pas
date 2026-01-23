@@ -52,7 +52,7 @@ begin
 
   inherited Create;
 
-  AvailableModels.Add('gemini-2.5-flash');   //ToDo -oCR: find list of all possible models
+  AvailableModels.Add('gemini-2.5-flash');   //ToDo -oCris: find list of all possible models
   AvailableModels.Add('gemini-2.5-pro');
   AvailableModels.Add('gemini-2.0-flash');   // This is available in the Free tier but it says "Limit reached"
   AvailableModels.Add('gemini-2.0-pro');     // This is not available at all in the Free tier

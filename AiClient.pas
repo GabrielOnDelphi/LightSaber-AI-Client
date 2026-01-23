@@ -7,6 +7,8 @@ UNIT AiClient;
    Makes a Post Http Request to a LLM.
    The actual LLM is represented by the TLLMObject.
    (Low level code)
+
+   ToDo 6: In case of TimeOuts: Implement retry logic with exponential backoff for transient failures. OR use generateContentStream instead of generateContent for large responses  OR  Consider breaking down very large prompts into smaller chunks
 -------------------------------------------------------------------------------------------------------------}
 
 INTERFACE
@@ -23,12 +25,11 @@ TYPE
      FHttpStatus: Integer;
      FSafetyRatings: TJSONArray;   // Raw JSON array for safety ratings
      FExtractedJSONObj: TJSONObject;
-
-     // Tokens for this specific prompt
-     TokensPrompt   : Integer;      // The number of tokens in your request (contents). Unused.
-     TokensCandidate: Integer;      // The number of tokens in the model's response (candidates). Unused.
-     TokensTotal    : Integer;      // The sum of both, representing the total tokens used for the API call.
    public
+     // Tokens for this specific prompt
+     TokensPrompt   : Integer;      // The number of tokens in your request (contents).
+     TokensCandidate: Integer;      // The number of tokens in the model's response (candidates).
+     TokensTotal    : Integer;      // The sum of both, representing the total tokens used for the API call.
      ErrorMsg: string;              // Detailed error for logging. Empty for 'ok'
      property ExtractedJSONObj: TJSONObject read FExtractedJSONObj;
      destructor Destroy; override;
@@ -43,7 +44,7 @@ TYPE
     function  finishReason2String(FinishReason: string): string;
     function  getHttpErrorMessage(StatusCode: Integer): string;
     function  detectErrorType(Response: string): string;
-    procedure uploadFile(InputFile: TChatPart);
+    procedure uploadFile(InputPart: TChatPart);
 
     procedure Load(Stream: TLightStream);   overload;
     procedure Save(Stream: TLightStream);   overload;
@@ -53,6 +54,7 @@ TYPE
   public
     LLM: TLLMObject;
     TokensTotal: Integer;    // Total used tokens for ALL prompts
+    Timeout: Integer;        // HTTP timeout in milliseconds (connection and response)
 
     constructor Create; virtual;
     destructor  Destroy; override;
@@ -96,6 +98,7 @@ constructor TAiClient.Create;
 begin
   inherited Create;
   LLM:= TLLMGemini.Create;  //ToDo 5: Let the user choose the LLM.
+  Timeout:= 300000;         // Default: 300 seconds (5 min) to match Gemini server-side limit
   Load(AppDataCore.AppDataFolder+ 'AiClient.bin');
 end;
 
@@ -147,20 +150,20 @@ end;
 
 // Uploads all files
 procedure TAiClient.UploadFiles(InputFiles: TChatParts);
-VAR InputFile: TChatPart;
+VAR InputPart: TChatPart;
 begin
   for VAR i:= 0 to InputFiles.Count-1 do
     begin
-      InputFile:= InputFiles[i];
-      if TFile.Exists(InputFile.Path)
-      then uploadFile(InputFile)                           // UPLOAD
-      else AppDataCore.RamLog.AddWarn('File not found: '+ InputFile.Path);
+      InputPart:= InputFiles[i];
+      if TFile.Exists(InputPart.FileName)
+      then uploadFile(InputPart)                           // UPLOAD
+      else AppDataCore.RamLog.AddWarn('File not found: '+ InputPart.FileName);
     end;
 end;
 
 
 // Uploads a single file to the AI Files API, returning its URI
-procedure TAiClient.uploadFile(InputFile: TChatPart);
+procedure TAiClient.uploadFile(InputPart: TChatPart);
 var
   HttpClient : TNetHTTPClient;
   Request    : TNetHTTPRequest;
@@ -179,6 +182,9 @@ begin
 
   try
     HttpClient := TNetHTTPClient.Create(nil);
+    HttpClient.ConnectionTimeout:= Timeout;
+    HttpClient.ResponseTimeout:= Timeout;
+	
     Request    := TNetHTTPRequest.Create(nil);
     Request.Client:= HttpClient;
 
@@ -187,7 +193,7 @@ begin
     //------------------------------------------------
 
     // Generate a unique display name for the uploaded file
-    VAR DisplayName:= ExtractFileName(InputFile.Path) + '-' + Copy(GUIDToString(TGUID.NewGuid),2,20);
+    VAR DisplayName:= ExtractFileName(InputPart.FileName) + '-' + Copy(GUIDToString(TGUID.NewGuid),2,20);
     VAR StreamName:= '{"file":{"display_name":"'+DisplayName+'"}}';
 
     BodyStream := TStringStream.Create(StreamName, TEncoding.UTF8);     // JSON body for initiating the upload
@@ -195,8 +201,8 @@ begin
       // Set headers required for starting a resumable upload
       Request.CustomHeaders['X-Goog-Upload-Protocol']              := 'resumable';
       Request.CustomHeaders['X-Goog-Upload-Command']               := 'start';
-      Request.CustomHeaders['X-Goog-Upload-Header-Content-Length'] := IntToStr(TFile.GetSize(InputFile.Path));
-      Request.CustomHeaders['X-Goog-Upload-Header-Content-Type']   := Extension2MimeType(InputFile.Path);
+      Request.CustomHeaders['X-Goog-Upload-Header-Content-Length'] := IntToStr(TFile.GetSize(InputPart.FileName));
+      Request.CustomHeaders['X-Goog-Upload-Header-Content-Type']   := Extension2MimeType(InputPart.FileName);
       Request.CustomHeaders['Content-Type']                        := 'application/json';
 
       Response:= Request.Post(LLM.StartUploadURL, BodyStream);
@@ -226,13 +232,13 @@ begin
     //------------------------------------------------
     //  Step 2: Upload File Data and Finalize
     //------------------------------------------------
-    FileData   := TFile.ReadAllBytes(InputFile.Path);
+    FileData   := TFile.ReadAllBytes(InputPart.FileName);   //ToDo 1: CRITICAL: we don't read from disk. The input file is now embedded into our stream! The question is, where do we actually load the content of the input file (png/pdf) into our stream? In LessonWizzardSetup?
     DataStream := TBytesStream.Create(FileData);
 
     // No need to clear CustomHeaders here; new values will override or add.
     Request.CustomHeaders['X-Goog-Upload-Offset']  := '0';                          // Starting from offset 0 for the whole file
     Request.CustomHeaders['X-Goog-Upload-Command'] := 'upload, finalize';           // Upload and finalize in one go
-    Request.CustomHeaders['Content-Type']          := Extension2MimeType(InputFile.Path); // Content type of the file data
+    Request.CustomHeaders['Content-Type']          := Extension2MimeType(InputPart.FileName); // Content type of the file data
     // Note: TNetHTTPRequest automatically sets Content-Length from the stream size for POST requests
 
     Response:= Request.Post(SessionURL, DataStream);
@@ -252,13 +258,15 @@ begin
     if JSONResp.TryGetValue('file', FileObj) and (FileObj is TJSONObject)
     then
       begin
-        InputFile.FileUri:= (FileObj as TJSONObject).GetValue<string>('uri');   //ToDo 5 -oCR: C2C: When do we release the files from the server??? Are they self-deleted?
-        AppDataCore.RamLog.AddVerb('File uploaded successfully. URI: '+ InputFile.FileUri);
+        InputPart.FileUri:= (FileObj as TJSONObject).GetValue<string>('uri');   //ToDo 5 -oCR: C2C: When do we release the files from the server??? Are they self-deleted?
+        AppDataCore.RamLog.AddVerb('File uploaded successfully. URI: '+ InputPart.FileUri);
       end
     else
       AppDataCore.RamLog.AddError('File URI not found in upload response: '+ Response.ContentAsString);
 
   finally
+    // Release Response interface BEFORE destroying HttpClient to avoid use-after-free
+    Response := nil;
     FreeAndNil(JSONResp);
     FreeAndNil(DataStream);
     FreeAndNil(Request);
@@ -296,6 +304,8 @@ begin
 
   try
     HttpClient    := TNetHTTPClient.Create(nil);      // Freed by: Finally
+    HttpClient.ConnectionTimeout:= Timeout;
+    HttpClient.ResponseTimeout:= Timeout;
     Request       := TNetHTTPRequest.Create(nil);     // Freed by: Finally
     RequestBody:= TStringStream.Create(BodyJSON.ToString, TEncoding.UTF8);
   except
@@ -326,19 +336,19 @@ begin
     END;
 
     if NOT Assigned(HttpResponse) then
-    begin
-      Result.ErrorMsg := 'No HTTP response received. Please check your internet connection.';
-      Exit;
-    end;
+      begin
+        Result.ErrorMsg := 'No HTTP response received. Please check your internet connection. Timeout: ' +IntToStr(Timeout);
+        Exit;
+      end;
 
     Result.FHttpStatus := HttpResponse.StatusCode;
 
     if HttpResponse.StatusCode <> 200 then
-    begin
-      Result.ErrorMsg:= 'AI response status: '+IntToStr(HttpResponse.StatusCode)+' ('+getHttpErrorMessage(HttpResponse.StatusCode)+') - ' + detectErrorType(HttpResponse.ContentAsString)+ '. ' + HttpResponse.ContentAsString;
-      Result.ErrorMsg:= StringReplace(Result.ErrorMsg, '\n', sLineBreak, [rfReplaceAll]);
-      Exit;
-    end;
+      begin
+        Result.ErrorMsg:= 'AI response status: '+IntToStr(HttpResponse.StatusCode)+' ('+getHttpErrorMessage(HttpResponse.StatusCode)+') - ' + detectErrorType(HttpResponse.ContentAsString)+ '. ' + HttpResponse.ContentAsString;
+        Result.ErrorMsg:= StringReplace(Result.ErrorMsg, '\n', sLineBreak, [rfReplaceAll]);
+        Exit;
+      end;
 
     // Parse JSON response
     try
@@ -352,26 +362,26 @@ begin
     end;
 
     if not Assigned(RespJSON) then
-    begin
-      Result.ErrorMsg := 'Invalid JSON response received.';
-      Exit;
-    end;
+      begin
+        Result.ErrorMsg := 'Invalid JSON response received.';
+        Exit;
+      end;
 
     // Process the token usage, candidates, etc
     if RespJSON.TryGetValue<TJSONObject>('usageMetadata', UsageMetadata) then
-    begin
-      Result.TokensPrompt     := UsageMetadata.GetValue<Integer>('promptTokenCount', 0);
-      Result.TokensCandidate  := UsageMetadata.GetValue<Integer>('candidatesTokenCount', 0);
-      Result.TokensTotal      := UsageMetadata.GetValue<Integer>('totalTokenCount', 0);
-      TokensTotal             := TokensTotal + Result.TokensTotal;
-    end;
+      begin
+        Result.TokensPrompt     := UsageMetadata.GetValue<Integer>('promptTokenCount', 0);
+        Result.TokensCandidate  := UsageMetadata.GetValue<Integer>('candidatesTokenCount', 0);
+        Result.TokensTotal      := UsageMetadata.GetValue<Integer>('totalTokenCount', 0);
+        TokensTotal             := TokensTotal + Result.TokensTotal;
+      end;
 
     // Extract information from the response
     if not RespJSON.TryGetValue<TJSONArray>('candidates', Candidates) or (Candidates.Count = 0) then
-    begin
-      Result.ErrorMsg:= 'No candidates found in response: ' + HttpResponse.ContentAsString;
-      Exit;
-    end;
+      begin
+        Result.ErrorMsg:= 'No candidates found in response: ' + HttpResponse.ContentAsString;
+        Exit;
+      end;
 
     Candidate := Candidates.Items[0] as TJSONObject; // Take the first candidate
 
@@ -415,6 +425,10 @@ begin
       end;
   finally
     // This block is guaranteed to run, even if we called Exit above.
+    // IMPORTANT: Release HttpResponse interface BEFORE destroying HttpClient.
+    // The response may hold internal references to objects owned by the client.
+    // Failing to do this can cause use-after-free during exception unwinding.
+    HttpResponse := nil;
     FreeAndNil(RespJSON);
     FreeAndNil(RequestBody);
     FreeAndNil(Request);
@@ -505,8 +519,6 @@ VAR
 CONST
   ResponseMimeType = 'application/json';
 begin
-  ResponseSchema     := nil;
-  ThinkingConfig25   := NIL;
   GenerationConfigObj:= nil;
 
   TRY
@@ -524,18 +536,19 @@ begin
     GenerationConfigObj.AddPair('topP',             LLM.TopP);
     GenerationConfigObj.AddPair('topK',             LLM.TopK);
     GenerationConfigObj.AddPair('thinkingConfig',   ThinkingConfig25);
+    // Note: ThinkingConfig25 is now owned by GenerationConfigObj - do NOT free it separately
 
     // File path is empty when we just ping the AI to see if the connection is fine
     if FilePath <> '' then
       begin
         ResponseSchema:= File2Json(FilePath);
         GenerationConfigObj.AddPair('responseSchema', ResponseSchema);
+        // Note: ResponseSchema is now owned by GenerationConfigObj - do NOT free it separately
       end;
 
     Result:= TJSONPair.Create('generationConfig', GenerationConfigObj);
   EXCEPT
-    FreeAndNil(ResponseSchema);
-    FreeAndNil(ThinkingConfig25);
+    // Only free GenerationConfigObj - it owns all its children (including ThinkingConfig25, ResponseSchema)
     FreeAndNil(GenerationConfigObj);
     RAISE;
   END;

@@ -13,9 +13,22 @@ USES
   //posix.UniStd,
   System.SysUtils, System.Types;
 
+TYPE
+  { File categories for UI thumbnail display and AI processing.
+    Note: This only affects how we display the preview thumbnail in the UI.
+    All file types are sent to Gemini as cptFileData - the AI handles format internally based on MIME type. }
+  TFileCategory = (
+    fcImage,       // PNG, JPG, GIF - display the actual image as thumbnail
+    fcText,        // TXT, MD - display TextThumb.png placeholder
+    fcDocument);   // PDF, RTF, DOC, DOCX - display DataThumb.png placeholder (future)
 
 // Log
 function  PrintError(ErrMsg: string): Boolean;
+
+// File category
+function  GetFileCategory(const FilePath: string): TFileCategory;
+function  IsImageFile(const FilePath: string): Boolean;
+function  IsTextFile(const FilePath: string): Boolean;
 
 // Mime
 function  Extension2MimeType(const FilePath: string): string;
@@ -52,13 +65,59 @@ end;
 
 
 {-------------------------------------------------------------------------------------------------------------
+   FILE CATEGORY DETECTION
+   Determines how to display the file in UI (thumbnail type) and helps with AI processing decisions.
+   Note: All files go to Gemini as cptFileData - this is purely for UI thumbnail selection.
+-------------------------------------------------------------------------------------------------------------}
+function GetFileCategory(const FilePath: string): TFileCategory;
+VAR Ext: string;
+begin
+  Ext:= LowerCase(ExtractFileExt(FilePath));
+
+//todo 1: I have my own function
+  // Images - can be displayed directly as thumbnails
+  if (Ext = '.png') OR (Ext = '.jpg') OR (Ext = '.jpeg') OR (Ext = '.gif') OR (Ext = '.bmp') OR (Ext = '.webp')
+  then EXIT(fcImage);
+
+  // Text files - show generic "TEXT" thumbnail, but send actual content to AI
+  // WARNING: Gemini 2.5 has a bug where 'text/markdown' MIME type is rejected (works in 2.0 Flash).
+  // See: https://discuss.ai.google.dev/t/unsupported-mime-type-text-md/83918
+  // Workaround: Use 'text/plain' for .md files, or upgrade to a model version that supports it.
+  if (Ext = '.txt') OR (Ext = '.md')
+  then EXIT(fcText);
+
+  // Documents - show generic "DATA" thumbnail (future: PDF, RTF, Word)
+  // These are sent to Gemini as-is; the API handles them based on MIME type
+  if (Ext = '.pdf') OR (Ext = '.rtf') OR (Ext = '.doc') OR (Ext = '.docx')
+  then EXIT(fcDocument);
+
+  // Default: treat as document (safest for unknown types)
+  Result:= fcDocument;
+end;
+
+
+function IsImageFile(const FilePath: string): Boolean;
+begin
+  Result:= GetFileCategory(FilePath) = fcImage;
+end;
+
+
+function IsTextFile(const FilePath: string): Boolean;
+begin
+  Result:= GetFileCategory(FilePath) = fcText;
+end;
+
+
+{-------------------------------------------------------------------------------------------------------------
    AI JSON RESPONSES - SAVE TO DISK
 -------------------------------------------------------------------------------------------------------------}
 function GetBackupJsonFullName(CONST SchemaName: string; AppendDate: Boolean= FALSE): string;
 begin
-  if AppDataCore.RunningHome
-  then Result:= AppDataCore.AppFolder
-  else Result:= AppDataCore.AppDataFolder;
+  {$IFDEF MsWindows}
+    Result:= AppDataCore.AppFolder;  // The resources are in executable's folder
+  {$ELSE}
+    Result:= AppDataCore.AppDataFolder;  // The resources are deployed by the Deployment Manager
+  {$ENDIF}
 
   Result:= Result+ Trail('AI Answers') + SchemaName;
 
@@ -100,7 +159,8 @@ end;
 {-------------------------------------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------------------------------------}
-// This is for Gemini images
+// This specific for Gemini images
+// Rescale bounding box from 0-1000 normalized coordinates to actual pixel coordinates
 procedure Rescale(var BoundBox: TRectF; aWidth, aHeight: integer);
 begin
   BoundBox.Left   := round((BoundBox.Left   / 1000) * aWidth);
@@ -115,6 +175,18 @@ end;
 
 {-------------------------------------------------------------------------------------------------------------
    MIME
+
+   KNOWN ISSUE - Gemini 2.5 text/markdown bug:
+   Gemini 2.5 rejects 'text/markdown' MIME type with "Unsupported MIME type" error.
+   The same files work fine with Gemini 2.0 Flash.
+   See: https://discuss.ai.google.dev/t/unsupported-mime-type-text-md/83918
+
+   Possible workarounds:
+   1. Use 'text/plain' for .md files (loses markdown semantic info but content still readable)
+   2. Wait for Google to fix the bug in Gemini 2.5
+   3. Use Gemini 2.0 Flash for markdown files
+
+   Current behavior: Returns 'text/markdown' - if you encounter issues, consider using text/plain instead.
 -------------------------------------------------------------------------------------------------------------}
 
 // Determines the MIME type of a file based on its extension
@@ -123,7 +195,7 @@ begin
   var Ext:= LowerCase(ExtractFileExt(FilePath));
 
   if Ext = '.txt'  then Result := 'text/plain' else
-  if Ext = '.md'   then Result := 'text/markdown' else
+  if Ext = '.md'   then Result := 'text/markdown' else         // WARNING: Gemini 2.5 may reject 'text/markdown'. See comment above. If issues occur, change to 'text/plain' as a workaround.
   if Ext = '.pdf'  then Result := 'application/pdf' else
   if Ext = '.jpg'  then Result := 'image/jpeg' else
   if Ext = '.jpeg' then Result := 'image/jpeg' else

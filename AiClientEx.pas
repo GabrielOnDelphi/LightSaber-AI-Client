@@ -24,7 +24,6 @@ TYPE
     function addTurns2Contents(CallJsonBody: TJSONObject; TextPart: TJSONObject; Role: TChatRole): Boolean;
   public
     constructor Create; override;
-    destructor Destroy; override;
 
     function SendAPICall(TextPart: TJSONObject; InputFiles: TChatParts; Schema: string; JsonShortName: string; SysInstr: TJSONPair): TAIResponse;
   end;
@@ -33,7 +32,7 @@ TYPE
 
 IMPLEMENTATION
 USES
-   AiUtils, LightCore.AppData;
+   LightCore.Types, AiUtils, LightCore.AppData;
 
 
 
@@ -42,11 +41,6 @@ begin
   inherited Create;
 end;
 
-
-destructor TAiClientEx.Destroy;
-begin
-  inherited;
-end;
 
 
 
@@ -85,7 +79,6 @@ begin
     PrintError(Result.ErrorMsg);
 
     // Save output
-    //done: make sure I don't save the files under the same name
     //Note: the loading is happening in TItemLesson.StartMakeQuestionsAI, based on the Sw_LoadJsonSectionsFromFile constant
     if Result.Valid
     then SaveAiResponse(JsonShortName, Result.ExtractedJSONObj.ToString)    // Save JSON to disk
@@ -120,11 +113,11 @@ function TAiClientEx.makeFileDataParts(InputFiles: TChatParts): TContentFilePart
 begin
   Assert(InputFiles <> NIL, 'MakeFileDataParts: InputFiles is NIL');
 
-  Result:= TContentFileParts.Create(True); // Own objects
+  Result:= TContentFileParts.Create(OwnObjects);
   for var FilePart in InputFiles do
     if FilePart.FileUri > '' then
      begin
-       VAR JSON:= makeFileDataPart(Extension2MimeType(FilePart.Path), FilePart.FileUri);
+       VAR JSON:= makeFileDataPart(Extension2MimeType(FilePart.FileName), FilePart.FileUri);
        Result.Add(JSON);
      end;
     ///else AppDataCore.RamLog.AddError('CRITICAL: File does not have URI!'+ FilePart.Path);
@@ -163,7 +156,23 @@ begin
   end;
 
   // Clone the TextPart to avoid ownership conflicts
-  TextPartClone := TextPart.Clone as TJSONObject;  //todo 5 -oGabi: don't close this. this means that its caller won't have to free it anymore because we (Result) free it.
+  TextPartClone:= TextPart.Clone as TJSONObject;
+ {The Clone is CORRECT and should be kept.
+
+  1. Ownership conflict prevention: When TextPart is passed into makeContentsSingleTurn, the caller owns it.
+     If you add it directly to Result (the JSON array), then Result would also claim ownership when it's freed.
+  2. Double-free scenario: Without the Clone:
+    - Caller creates TextPart
+    - Function adds TextPart to Result
+    - Caller frees TextPart (as they own it) ? First free
+    - Later, Result is freed and tries to free TextPart ? Second free = CRASH
+  3. Current correct flow:
+    - Caller creates TextPart and passes it
+    - Function clones it -> TextPartClone is a new independent object
+    - TextPartClone gets added to Result -> Result owns the clone
+    - Caller frees their original TextPart ? No problem
+    - Result frees TextPartClone when destroyed ? No problem }
+
   PartsArray.AddElement(TextPartClone);
 
   // Create the single turn contents object

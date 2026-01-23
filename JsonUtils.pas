@@ -29,6 +29,11 @@ var
   JsonContent: string;
   JsonValue: TJSONValue;
 begin
+  // The program crashes in HTTP request if resource file not found, so we check if files are found BEFORE we send the request.
+  if NOT FileExists(FilePath) then
+    raise Exception.Create('Schema file not found: ' + FilePath + sLineBreak +
+      'If running in development mode, ensure the Resources/API_call folder exists.');
+
   JsonContent:= StringFromFile(FilePath);
 
   // Parse the JSON and ensure it's an object

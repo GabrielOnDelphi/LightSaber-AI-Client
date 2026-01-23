@@ -21,10 +21,10 @@ TYPE
    public
      ChatType  : TChatType;
      Text      : string;      // Used if PartType is cptText.
-     Path      : string;      // Our inpur file. Used if PartType is cptFileData.
+     FileName  : string;      // Our input file. Used if PartType is cptFileData.
      FileUri   : string;      // We get it from Gemini. Used if PartType is cptFileData (URI from "Gemini Files API"). If this is empty, we signal that there was a problem during upload. Example: 'https://generativelanguage.googleapis.com/v1beta/files/p684bj0vdbxj'
-     Width     : integer;
-     Height    : integer;     // Width and height of the original input image. Used if PartType is cptFile.
+     Width     : integer;     // Width and height of the original input image. Used if PartType is cptFile. Has no meaning when the input is a PDF
+     Height    : Integer;
      ParentList: TChatParts;
 
      procedure Load(Stream: TLightStream); virtual;
@@ -37,7 +37,7 @@ TYPE
    private
      CONST ClassSignature: AnsiString= 'TChatParts';
    public
-     function FileExists(FileName: string): Boolean;
+     function FileAlreadyLoaded(FileName: string): Boolean;
 
      procedure Load(Stream: TLightStream); virtual; abstract;
      procedure Save(Stream: TLightStream); virtual; abstract;
@@ -70,7 +70,7 @@ begin
 
   ChatType := TChatType(Stream.ReadInteger);
   Text     := Stream.ReadString;
-  Path     := Stream.ReadString;
+  FileName := Stream.ReadString;
   FileUri  := Stream.ReadString;
   Width    := Stream.ReadInteger;
   Height   := Stream.ReadInteger;
@@ -84,8 +84,8 @@ begin
   Stream.WriteHeader(ClassSignature, 1);
 
   Stream.WriteInteger(Ord(ChatType));
-  Stream.WriteString(Text);
-  Stream.WriteString(Path);
+  Stream.WriteString(Text);       // Save full filename. We don't need the full filename once we share the file, however, we need it in the Lesson Setup Wizzard to make sure a file is not loaded twice.
+  Stream.WriteString(FileName);
   Stream.WriteString(FileUri);
   Stream.WriteInteger(Width);
   Stream.WriteInteger(Height);
@@ -96,12 +96,12 @@ end;
 
 
 // Returns true if the specified file is already in the list
-function TChatParts.FileExists(FileName: string): Boolean;
+function TChatParts.FileAlreadyLoaded(FileName: string): Boolean;
 begin
   if Count = 0 then EXIT(FALSE);
 
   for VAR InputFile in Self do
-    if SameFileName(InputFile.Path, FileName)
+    if SameFileName(InputFile.FileName, FileName)
     then EXIT(TRUE);
 
   Result:= FALSE;
