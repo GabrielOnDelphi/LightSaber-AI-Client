@@ -97,7 +97,7 @@ end;
 constructor TAiClient.Create;
 begin
   inherited Create;
-  LLM:= TLLMGemini.Create;  //ToDo 5: Let the user choose the LLM.
+  LLM:= TLLMGemini.Create;  //ToDo 6: Let the user choose the LLM.
   Timeout:= 300000;         // Default: 300 seconds (5 min) to match Gemini server-side limit
   Load(AppDataCore.AppDataFolder+ 'AiClient.bin');
 end;

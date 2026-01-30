@@ -69,30 +69,12 @@ end;
    Determines how to display the file in UI (thumbnail type) and helps with AI processing decisions.
    Note: All files go to Gemini as cptFileData - this is purely for UI thumbnail selection.
 -------------------------------------------------------------------------------------------------------------}
-function GetFileCategory(const FilePath: string): TFileCategory;
-VAR Ext: string;
+function GetFileCategory(CONST FilePath: string): TFileCategory;
 begin
-  Ext:= LowerCase(ExtractFileExt(FilePath));
-
-//todo 1: I have my own function
-  // Images - can be displayed directly as thumbnails
-  if (Ext = '.png') OR (Ext = '.jpg') OR (Ext = '.jpeg') OR (Ext = '.gif') OR (Ext = '.bmp') OR (Ext = '.webp')
-  then EXIT(fcImage);
-
-  // Text files - show generic "TEXT" thumbnail, but send actual content to AI
-  // WARNING: Gemini 2.5 has a bug where 'text/markdown' MIME type is rejected (works in 2.0 Flash).
-  // See: https://discuss.ai.google.dev/t/unsupported-mime-type-text-md/83918
-  // Workaround: Use 'text/plain' for .md files, or upgrade to a model version that supports it.
-  if (Ext = '.txt') OR (Ext = '.md')
-  then EXIT(fcText);
-
-  // Documents - show generic "DATA" thumbnail (future: PDF, RTF, Word)
-  // These are sent to Gemini as-is; the API handles them based on MIME type
-  if (Ext = '.pdf') OR (Ext = '.rtf') OR (Ext = '.doc') OR (Ext = '.docx')
-  then EXIT(fcDocument);
-
-  // Default: treat as document (safest for unknown types)
-  Result:= fcDocument;
+  if IsImage(FilePath)    then EXIT(fcImage);      // Images - can be displayed directly as thumbnails
+  if IsText(FilePath)     then EXIT(fcText);       // Text files - show generic "TEXT" thumbnail, but send actual content to AI. WARNING: Gemini 2.5 has a bug where 'text/markdown' MIME type is rejected (works in 2.0 Flash).  Workaround: Use 'text/plain' for .md files, or upgrade to a model version that supports it. See: https://discuss.ai.google.dev/t/unsupported-mime-type-text-md/83918
+  if IsDocument(FilePath) then EXIT(fcDocument);   // Documents - show generic "DATA" thumbnail. These are sent to Gemini as-is; the API handles them based on MIME type
+  Result:= fcDocument;                             // Default: treat as document (safest for unknown types)
 end;
 
 

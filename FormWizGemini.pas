@@ -39,6 +39,9 @@ TYPE
     Layout6: TLayout;
     Layout7: TLayout;
     Layout8: TLayout;
+    Layout9: TLayout;
+    lblTokens: TLabel;
+    Button2: TButton;
     procedure btnCancelClick         (Sender: TObject);
     procedure btnOKClick             (Sender: TObject);
     procedure FormClose              (Sender: TObject; var Action: TCloseAction);
@@ -57,6 +60,7 @@ TYPE
 
 
 IMPLEMENTATION {$R *.fmx}
+USES LightCore;
 
 
 class procedure TfrmGemini.ShowFormModal(aGemini: TAiClient);
@@ -130,6 +134,9 @@ begin
   spnTopP.Value        := Gemini.LLM.TopP;
   spnTopK.Value        := Gemini.LLM.TopK;
   spnMaxTokens.Value   := Gemini.LLM.MaxTokens;
+
+  // Show total tokens used
+  lblTokens.Text:= 'Tokens used: ' + Real2Str(Gemini.TokensTotal / 1000, 1) + 'K';
 end;
 
 
