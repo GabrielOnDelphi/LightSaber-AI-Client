@@ -39,7 +39,7 @@ procedure SaveAiResponse       (CONST SchemaName, Text: string);
 procedure DeleteResponseFile   (CONST SchemaName: string);
 procedure DeleteResponseFiles  (CONST SchemaName: string);
 function  GetBackupJsonFullName(CONST SchemaName: string; AppendDate: Boolean= FALSE): string;
-
+function  GetAiAnswersFolder: string;
 
 // Gemini specific
 procedure Rescale(var BoundBox: TRectF; aWidth, aHeight: integer);
@@ -93,7 +93,7 @@ end;
 {-------------------------------------------------------------------------------------------------------------
    AI JSON RESPONSES - SAVE TO DISK
 -------------------------------------------------------------------------------------------------------------}
-function GetBackupJsonFullName(CONST SchemaName: string; AppendDate: Boolean= FALSE): string;
+function GetAiAnswersFolder: string;
 begin
   {$IFDEF MsWindows}
     Result:= AppDataCore.AppFolder;  // The resources are in executable's folder
@@ -101,7 +101,13 @@ begin
     Result:= AppDataCore.AppDataFolder;  // The resources are deployed by the Deployment Manager
   {$ENDIF}
 
-  Result:= Result+ Trail('AI Answers') + SchemaName;
+  Result:= Result+ Trail('AI Answers');
+end;
+
+
+function GetBackupJsonFullName(CONST SchemaName: string; AppendDate: Boolean= FALSE): string;
+begin
+  Result:= GetAiAnswersFolder + SchemaName;
 
   if AppendDate
   then Result:= Result+ ' - ' + DateTimeToStr_IO;

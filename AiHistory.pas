@@ -75,7 +75,7 @@ begin
   Width    := Stream.ReadInteger;
   Height   := Stream.ReadInteger;
 
-  Stream.ReadPadding(4);
+  Stream.ReadPaddingValidation(4);
 end;
 
 
@@ -90,7 +90,7 @@ begin
   Stream.WriteInteger(Width);
   Stream.WriteInteger(Height);
 
-  Stream.WritePadding(4);
+  Stream.WritePaddingValidation(4);
 end;
 
 

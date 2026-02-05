@@ -491,7 +491,7 @@ procedure TAiClient.Load(Stream: TLightStream);
 begin
   if NOT Stream.ReadHeader(ClassSignature, 2) then EXIT;
   TokensTotal:= Stream.ReadInteger;
-  Stream.ReadPadding(12);
+  Stream.ReadPaddingValidation(12);
 end;
 
 
@@ -499,7 +499,7 @@ procedure TAiClient.Save(Stream: TLightStream);
 begin
   Stream.WriteHeader(ClassSignature, 2);
   Stream.WriteInteger(TokensTotal);
-  Stream.WritePadding(12);
+  Stream.WritePaddingValidation(12);
 end;
 
 

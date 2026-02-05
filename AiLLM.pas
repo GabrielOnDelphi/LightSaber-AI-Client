@@ -120,7 +120,7 @@ begin
   TopP       := Stream.ReadDouble;
   TopK       := Stream.ReadInteger;
   MaxTokens  := Stream.ReadInteger;
-  Stream.ReadPadding;
+  Stream.ReadPaddingValidation;
 end;
 
 
@@ -135,7 +135,7 @@ begin
   Stream.WriteDouble (TopP       );
   Stream.WriteInteger(TopK       );
   Stream.WriteInteger(MaxTokens  );
-  Stream.WritePadding;
+  Stream.WritePaddingValidation;
 end;
 
 
