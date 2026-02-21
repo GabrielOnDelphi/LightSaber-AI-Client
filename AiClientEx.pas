@@ -78,10 +78,9 @@ begin
     // Log errors
     PrintError(Result.ErrorMsg);
 
-    // Save output
-    //Note: the loading is happening in TItemLesson.StartMakeQuestionsAI, based on the Sw_LoadJsonSectionsFromFile constant
-    if Result.Valid
-    then SaveAiResponse(JsonShortName, Result.ExtractedJSONObj.ToString)    // Save JSON to disk
+    // Backup the AI output to disk
+    // Note: the loading is happening in TItemLesson.StartMakeQuestionsAI, based on the Sw_LoadJsonSectionsFromFile constant
+    SaveAiResponse(JsonShortName, Result.ExtractedJSONObj.ToString)
   FINALLY
     FreeAndNil(BodyJSON);     // BodyJSON owns the cloned pairs, so freeing it will free the cloned content
     FreeAndNil(LLMConfig);

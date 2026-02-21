@@ -2,8 +2,8 @@ object frmGemini: TfrmGemini
   Left = 630
   Top = 330
   Caption = 'Geminy'
-  ClientHeight = 625
-  ClientWidth = 360
+  ClientHeight = 490
+  ClientWidth = 445
   Position = Designed
   FormFactor.Width = 320
   FormFactor.Height = 480
@@ -20,17 +20,17 @@ object frmGemini: TfrmGemini
     Margins.Right = 3.000000000000000000
     Margins.Bottom = 3.000000000000000000
     Position.X = 3.000000000000000000
-    Position.Y = 541.000000000000000000
-    Size.Width = 354.000000000000000000
+    Position.Y = 406.000000000000000000
+    Size.Width = 439.000000000000000000
     Size.Height = 48.000000000000000000
     Size.PlatformDefault = False
     Text = '.'#13#10'.'#13#10'.'
-    TabOrder = 2
+    TabOrder = 1
   end
   object layBottom: TLayout
     Align = Bottom
-    Position.Y = 592.000000000000000000
-    Size.Width = 360.000000000000000000
+    Position.Y = 457.000000000000000000
+    Size.Width = 445.000000000000000000
     Size.Height = 33.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
@@ -41,12 +41,12 @@ object frmGemini: TfrmGemini
       Margins.Top = 3.000000000000000000
       Margins.Right = 3.000000000000000000
       Margins.Bottom = 3.000000000000000000
-      Position.X = 191.000000000000000000
+      Position.X = 276.000000000000000000
       Position.Y = 3.000000000000000000
       Size.Width = 80.000000000000000000
       Size.Height = 27.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 4
+      TabOrder = 3
       Text = 'Cancel'
       OnClick = btnCancelClick
     end
@@ -57,407 +57,482 @@ object frmGemini: TfrmGemini
       Margins.Top = 3.000000000000000000
       Margins.Right = 3.000000000000000000
       Margins.Bottom = 3.000000000000000000
-      Position.X = 277.000000000000000000
+      Position.X = 362.000000000000000000
       Position.Y = 3.000000000000000000
       Size.Width = 80.000000000000000000
       Size.Height = 27.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 3
+      TabOrder = 2
       Text = 'OK'
       OnClick = btnOKClick
     end
-    object Button1: TButton
-      Align = Left
-      Hint = 'Apply settings and test connection to AI'
-      Margins.Left = 3.000000000000000000
-      Margins.Top = 3.000000000000000000
-      Margins.Right = 3.000000000000000000
-      Margins.Bottom = 3.000000000000000000
-      Position.X = 3.000000000000000000
-      Position.Y = 3.000000000000000000
-      Size.Width = 80.000000000000000000
-      Size.Height = 27.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 2
-      Text = 'Test'
-      ParentShowHint = False
-      ShowHint = True
-      OnClick = Button1Click
-    end
   end
-  object Layout1: TLayout
-    Align = Top
-    Margins.Left = 18.000000000000000000
-    Margins.Top = 12.000000000000000000
-    Margins.Right = 18.000000000000000000
-    Margins.Bottom = 3.000000000000000000
-    Position.X = 18.000000000000000000
-    Position.Y = 288.000000000000000000
-    Size.Width = 324.000000000000000000
-    Size.Height = 40.000000000000000000
+  object TabControl: TTabControl
+    Align = Client
+    Size.Width = 445.000000000000000000
+    Size.Height = 403.000000000000000000
     Size.PlatformDefault = False
-    TabOrder = 7
-    object lblTemperature: TLabel
-      Align = Left
-      AutoSize = True
-      Margins.Top = 3.000000000000000000
-      Margins.Right = 3.000000000000000000
-      Margins.Bottom = 3.000000000000000000
-      Position.Y = 3.000000000000000000
-      Size.Width = 67.000000000000000000
-      Size.Height = 34.000000000000000000
+    TabIndex = 0
+    TabOrder = 2
+    TabPosition = PlatformDefault
+    Sizes = (
+      445s
+      377s
+      445s
+      377s
+      445s
+      377s)
+    object TabItem1: TTabItem
+      CustomIcon = <
+        item
+        end>
+      IsSelected = True
+      Size.Width = 42.000000000000000000
+      Size.Height = 26.000000000000000000
       Size.PlatformDefault = False
-      TextSettings.WordWrap = False
-      Text = 'Temperature'
-      TabOrder = 15
-    end
-    object spnTemperature: TSpinBox
-      Touch.InteractiveGestures = [LongTap, DoubleTap]
-      Align = Left
-      TabOrder = 11
-      Cursor = crIBeam
-      Max = 2.000000000000000000
-      Value = 0.100000000000000000
-      ValueType = Float
-      Increment = 0.050000000745058060
-      KeyboardType = DecimalNumberPad
-      Position.X = 73.000000000000000000
-      Position.Y = 3.000000000000000000
-      Margins.Left = 3.000000000000000000
-      Margins.Top = 3.000000000000000000
-      Margins.Right = 3.000000000000000000
-      Margins.Bottom = 3.000000000000000000
-      Size.Width = 108.000000000000000000
-      Size.Height = 34.000000000000000000
-      Size.PlatformDefault = False
-      OnCanFocus = spnTemperatureCanFocus
-    end
-  end
-  object Layout2: TLayout
-    Align = Top
-    Margins.Left = 18.000000000000000000
-    Margins.Top = 7.000000000000000000
-    Margins.Right = 18.000000000000000000
-    Margins.Bottom = 3.000000000000000000
-    Position.X = 18.000000000000000000
-    Position.Y = 438.000000000000000000
-    Size.Width = 324.000000000000000000
-    Size.Height = 40.000000000000000000
-    Size.PlatformDefault = False
-    TabOrder = 5
-    object spnTopP: TSpinBox
-      Touch.InteractiveGestures = [LongTap, DoubleTap]
-      Align = Left
-      TabOrder = 10
-      Cursor = crIBeam
-      Max = 1.000000000000000000
-      Value = 0.500000000000000000
-      ValueType = Float
-      Increment = 0.050000000745058060
-      KeyboardType = DecimalNumberPad
-      Position.X = 36.000000000000000000
-      Position.Y = 3.000000000000000000
-      Margins.Left = 3.000000000000000000
-      Margins.Top = 3.000000000000000000
-      Margins.Right = 3.000000000000000000
-      Margins.Bottom = 3.000000000000000000
-      Size.Width = 108.000000000000000000
-      Size.Height = 34.000000000000000000
-      Size.PlatformDefault = False
-      OnCanFocus = spnTopPCanFocus
-    end
-    object lblTopP: TLabel
-      Align = Left
-      AutoSize = True
-      Margins.Top = 3.000000000000000000
-      Margins.Right = 3.000000000000000000
-      Margins.Bottom = 3.000000000000000000
-      Position.Y = 3.000000000000000000
-      Size.Width = 30.000000000000000000
-      Size.Height = 34.000000000000000000
-      Size.PlatformDefault = False
-      TextSettings.WordWrap = False
-      Text = 'Top P'
-      TabOrder = 14
-    end
-  end
-  object Layout3: TLayout
-    Align = Top
-    Margins.Left = 18.000000000000000000
-    Margins.Top = 7.000000000000000000
-    Margins.Right = 18.000000000000000000
-    Margins.Bottom = 3.000000000000000000
-    Position.X = 18.000000000000000000
-    Position.Y = 388.000000000000000000
-    Size.Width = 324.000000000000000000
-    Size.Height = 40.000000000000000000
-    Size.PlatformDefault = False
-    TabOrder = 4
-    object spnTopK: TSpinBox
-      Touch.InteractiveGestures = [LongTap, DoubleTap]
-      Align = Left
-      TabOrder = 8
-      Cursor = crIBeam
-      Position.X = 36.000000000000000000
-      Position.Y = 3.000000000000000000
-      Margins.Left = 3.000000000000000000
-      Margins.Top = 3.000000000000000000
-      Margins.Right = 3.000000000000000000
-      Margins.Bottom = 3.000000000000000000
-      Size.Width = 108.000000000000000000
-      Size.Height = 34.000000000000000000
-      Size.PlatformDefault = False
-      OnCanFocus = spnTopKCanFocus
-    end
-    object lblTopK: TLabel
-      Align = Left
-      AutoSize = True
-      Margins.Top = 3.000000000000000000
-      Margins.Right = 3.000000000000000000
-      Margins.Bottom = 3.000000000000000000
-      Position.Y = 3.000000000000000000
-      Size.Width = 30.000000000000000000
-      Size.Height = 34.000000000000000000
-      Size.PlatformDefault = False
-      TextSettings.WordWrap = False
-      Text = 'Top K'
-      TabOrder = 13
-    end
-  end
-  object Layout4: TLayout
-    Align = Top
-    Margins.Left = 18.000000000000000000
-    Margins.Top = 7.000000000000000000
-    Margins.Right = 18.000000000000000000
-    Margins.Bottom = 3.000000000000000000
-    Position.X = 18.000000000000000000
-    Position.Y = 338.000000000000000000
-    Size.Width = 324.000000000000000000
-    Size.Height = 40.000000000000000000
-    Size.PlatformDefault = False
-    TabOrder = 3
-    object lblMaxTokens: TLabel
-      Align = Left
-      AutoSize = True
-      Margins.Top = 3.000000000000000000
-      Margins.Right = 3.000000000000000000
-      Margins.Bottom = 3.000000000000000000
-      Position.Y = 3.000000000000000000
-      Size.Width = 61.000000000000000000
-      Size.Height = 34.000000000000000000
-      Size.PlatformDefault = False
-      TextSettings.WordWrap = False
-      Text = 'Max tokens'
-      TabOrder = 12
-    end
-    object spnMaxTokens: TSpinBox
-      Touch.InteractiveGestures = [LongTap, DoubleTap]
-      Align = Left
-      TabOrder = 9
-      Cursor = crIBeam
-      Min = 100.000000000000000000
-      Max = 100000.000000000000000000
-      Value = 5000.000000000000000000
-      Increment = 100.000000000000000000
-      Position.X = 67.000000000000000000
-      Position.Y = 3.000000000000000000
-      Margins.Left = 3.000000000000000000
-      Margins.Top = 3.000000000000000000
-      Margins.Right = 3.000000000000000000
-      Margins.Bottom = 3.000000000000000000
-      Size.Width = 108.000000000000000000
-      Size.Height = 34.000000000000000000
-      Size.PlatformDefault = False
-      OnCanFocus = spnMaxTokensCanFocus
-    end
-  end
-  object Layout6: TLayout
-    Align = Top
-    Margins.Left = 18.000000000000000000
-    Margins.Top = 3.000000000000000000
-    Margins.Right = 18.000000000000000000
-    Margins.Bottom = 3.000000000000000000
-    Position.X = 18.000000000000000000
-    Position.Y = 141.000000000000000000
-    Size.Width = 324.000000000000000000
-    Size.Height = 63.000000000000000000
-    Size.PlatformDefault = False
-    TabOrder = 10
-    object lblApiBase: TLabel
-      Align = Top
-      Margins.Left = 18.000000000000000000
-      Margins.Top = 7.000000000000000000
-      Margins.Right = 18.000000000000000000
-      Position.X = 18.000000000000000000
-      Position.Y = 7.000000000000000000
-      Size.Width = 288.000000000000000000
-      Size.Height = 17.000000000000000000
-      Size.PlatformDefault = False
-      TextSettings.WordWrap = False
-      Text = 'API base'
-      TabOrder = 5
-    end
-    object edtApiBase: TEdit
-      Touch.InteractiveGestures = [LongTap, DoubleTap]
-      Align = Top
-      TabOrder = 4
-      Position.X = 18.000000000000000000
-      Position.Y = 27.000000000000000000
-      Margins.Left = 18.000000000000000000
-      Margins.Top = 3.000000000000000000
-      Margins.Right = 18.000000000000000000
-      Size.Width = 288.000000000000000000
-      Size.Height = 22.000000000000000000
-      Size.PlatformDefault = False
-    end
-  end
-  object Layout7: TLayout
-    Align = Top
-    Margins.Left = 18.000000000000000000
-    Margins.Top = 3.000000000000000000
-    Margins.Right = 18.000000000000000000
-    Margins.Bottom = 3.000000000000000000
-    Position.X = 18.000000000000000000
-    Position.Y = 72.000000000000000000
-    Size.Width = 324.000000000000000000
-    Size.Height = 63.000000000000000000
-    Size.PlatformDefault = False
-    TabOrder = 8
-    object cmbModel: TComboBox
-      Align = Top
-      Margins.Left = 18.000000000000000000
-      Margins.Top = 3.000000000000000000
-      Margins.Right = 18.000000000000000000
-      Position.X = 18.000000000000000000
-      Position.Y = 27.000000000000000000
-      Size.Width = 288.000000000000000000
-      Size.Height = 22.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 17
-    end
-    object Label4: TLabel
-      Align = Top
-      Margins.Left = 18.000000000000000000
-      Margins.Top = 7.000000000000000000
-      Margins.Right = 18.000000000000000000
-      Position.X = 18.000000000000000000
-      Position.Y = 7.000000000000000000
-      Size.Width = 288.000000000000000000
-      Size.Height = 17.000000000000000000
-      Size.PlatformDefault = False
-      TextSettings.WordWrap = False
-      Text = 'Model'
+      StyleLookup = ''
       TabOrder = 0
+      Text = 'URL'
+      ExplicitSize.cx = 42.000000000000000000
+      ExplicitSize.cy = 26.000000000000000000
+      object Layout5: TLayout
+        Align = Top
+        Margins.Left = 18.000000000000000000
+        Margins.Top = 3.000000000000000000
+        Margins.Right = 18.000000000000000000
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 18.000000000000000000
+        Position.Y = 3.000000000000000000
+        Size.Width = 409.000000000000000000
+        Size.Height = 63.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 1
+        object edtApiKey: TEdit
+          Touch.InteractiveGestures = [LongTap, DoubleTap]
+          Align = Top
+          TabOrder = 6
+          Position.X = 18.000000000000000000
+          Position.Y = 27.000000000000000000
+          Margins.Left = 18.000000000000000000
+          Margins.Top = 3.000000000000000000
+          Margins.Right = 18.000000000000000000
+          Size.Width = 373.000000000000000000
+          Size.Height = 22.000000000000000000
+          Size.PlatformDefault = False
+        end
+        object Label1: TLabel
+          Align = Top
+          Margins.Left = 18.000000000000000000
+          Margins.Top = 7.000000000000000000
+          Margins.Right = 18.000000000000000000
+          Position.X = 18.000000000000000000
+          Position.Y = 7.000000000000000000
+          Size.Width = 373.000000000000000000
+          Size.Height = 17.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.WordWrap = False
+          Text = 'API key'
+          TabOrder = 7
+        end
+      end
+      object Layout7: TLayout
+        Align = Top
+        Margins.Left = 18.000000000000000000
+        Margins.Top = 3.000000000000000000
+        Margins.Right = 18.000000000000000000
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 18.000000000000000000
+        Position.Y = 72.000000000000000000
+        Size.Width = 409.000000000000000000
+        Size.Height = 63.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 8
+        object cmbModel: TComboBox
+          Align = Top
+          Margins.Left = 18.000000000000000000
+          Margins.Top = 3.000000000000000000
+          Margins.Right = 18.000000000000000000
+          Position.X = 18.000000000000000000
+          Position.Y = 27.000000000000000000
+          Size.Width = 373.000000000000000000
+          Size.Height = 22.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 17
+        end
+        object Label2: TLabel
+          Align = Top
+          Margins.Left = 18.000000000000000000
+          Margins.Top = 7.000000000000000000
+          Margins.Right = 18.000000000000000000
+          Position.X = 18.000000000000000000
+          Position.Y = 7.000000000000000000
+          Size.Width = 373.000000000000000000
+          Size.Height = 17.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.WordWrap = False
+          Text = 'Model'
+          TabOrder = 0
+        end
+      end
+      object Layout6: TLayout
+        Align = Top
+        Margins.Left = 18.000000000000000000
+        Margins.Top = 3.000000000000000000
+        Margins.Right = 18.000000000000000000
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 18.000000000000000000
+        Position.Y = 141.000000000000000000
+        Size.Width = 409.000000000000000000
+        Size.Height = 63.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 10
+        object lblApiBase: TLabel
+          Align = Top
+          Margins.Left = 18.000000000000000000
+          Margins.Top = 7.000000000000000000
+          Margins.Right = 18.000000000000000000
+          Position.X = 18.000000000000000000
+          Position.Y = 7.000000000000000000
+          Size.Width = 373.000000000000000000
+          Size.Height = 17.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.WordWrap = False
+          Text = 'API base'
+          TabOrder = 5
+        end
+        object edtApiBase: TEdit
+          Touch.InteractiveGestures = [LongTap, DoubleTap]
+          Align = Top
+          TabOrder = 4
+          Position.X = 18.000000000000000000
+          Position.Y = 27.000000000000000000
+          Margins.Left = 18.000000000000000000
+          Margins.Top = 3.000000000000000000
+          Margins.Right = 18.000000000000000000
+          Size.Width = 373.000000000000000000
+          Size.Height = 22.000000000000000000
+          Size.PlatformDefault = False
+        end
+      end
+      object Layout8: TLayout
+        Align = Top
+        Margins.Left = 18.000000000000000000
+        Margins.Top = 3.000000000000000000
+        Margins.Right = 18.000000000000000000
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 18.000000000000000000
+        Position.Y = 210.000000000000000000
+        Size.Width = 409.000000000000000000
+        Size.Height = 63.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 9
+        object Label3: TLabel
+          Align = Top
+          Margins.Left = 18.000000000000000000
+          Margins.Top = 7.000000000000000000
+          Margins.Right = 18.000000000000000000
+          Position.X = 18.000000000000000000
+          Position.Y = 7.000000000000000000
+          Size.Width = 373.000000000000000000
+          Size.Height = 17.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.WordWrap = False
+          Text = 'Upload base'
+          TabOrder = 3
+        end
+        object edtUploadBase: TEdit
+          Touch.InteractiveGestures = [LongTap, DoubleTap]
+          Align = Top
+          TabOrder = 2
+          Position.X = 18.000000000000000000
+          Position.Y = 27.000000000000000000
+          Margins.Left = 18.000000000000000000
+          Margins.Top = 3.000000000000000000
+          Margins.Right = 18.000000000000000000
+          Size.Width = 373.000000000000000000
+          Size.Height = 22.000000000000000000
+          Size.PlatformDefault = False
+        end
+      end
+      object btnTest: TButton
+        Anchors = [akRight, akBottom]
+        Hint = 'Apply settings and test connection to AI'
+        Margins.Left = 3.000000000000000000
+        Margins.Top = 3.000000000000000000
+        Margins.Right = 3.000000000000000000
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 362.000000000000000000
+        Position.Y = 341.000000000000000000
+        Size.Width = 80.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 2
+        Text = 'Test'
+        ParentShowHint = False
+        ShowHint = True
+        OnClick = btnTestClick
+      end
     end
-  end
-  object Layout5: TLayout
-    Align = Top
-    Margins.Left = 18.000000000000000000
-    Margins.Top = 3.000000000000000000
-    Margins.Right = 18.000000000000000000
-    Margins.Bottom = 3.000000000000000000
-    Position.X = 18.000000000000000000
-    Position.Y = 3.000000000000000000
-    Size.Width = 324.000000000000000000
-    Size.Height = 63.000000000000000000
-    Size.PlatformDefault = False
-    TabOrder = 1
-    object edtApiKey: TEdit
-      Touch.InteractiveGestures = [LongTap, DoubleTap]
-      Align = Top
-      TabOrder = 6
-      Position.X = 18.000000000000000000
-      Position.Y = 27.000000000000000000
-      Margins.Left = 18.000000000000000000
-      Margins.Top = 3.000000000000000000
-      Margins.Right = 18.000000000000000000
-      Size.Width = 288.000000000000000000
-      Size.Height = 22.000000000000000000
+    object TabItem2: TTabItem
+      CustomIcon = <
+        item
+        end>
+      IsSelected = False
+      Size.Width = 63.000000000000000000
+      Size.Height = 26.000000000000000000
       Size.PlatformDefault = False
+      StyleLookup = ''
+      TabOrder = 0
+      Text = 'Settings'
+      ExplicitSize.cx = 63.000000000000000000
+      ExplicitSize.cy = 26.000000000000000000
+      object layThinking: TLayout
+        Align = Top
+        Margins.Left = 18.000000000000000000
+        Margins.Top = 12.000000000000000000
+        Margins.Right = 18.000000000000000000
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 18.000000000000000000
+        Position.Y = 217.000000000000000000
+        Size.Width = 409.000000000000000000
+        Size.Height = 30.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 7
+        object chkThinking: TCheckBox
+          Align = Left
+          Margins.Left = 3.000000000000000000
+          Margins.Top = 3.000000000000000000
+          Margins.Right = 3.000000000000000000
+          Margins.Bottom = 3.000000000000000000
+          Position.X = 3.000000000000000000
+          Position.Y = 3.000000000000000000
+          Size.Width = 200.000000000000000000
+          Size.Height = 24.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 0
+          Text = 'Enable AI thinking'
+          OnCanFocus = chkThinkingCanFocus
+        end
+      end
+      object Layout1: TLayout
+        Align = Top
+        Margins.Left = 18.000000000000000000
+        Margins.Top = 12.000000000000000000
+        Margins.Right = 18.000000000000000000
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 18.000000000000000000
+        Position.Y = 12.000000000000000000
+        Size.Width = 409.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 6
+        object lblTemperature: TLabel
+          Align = Left
+          AutoSize = True
+          Margins.Top = 3.000000000000000000
+          Margins.Right = 3.000000000000000000
+          Margins.Bottom = 3.000000000000000000
+          Position.Y = 3.000000000000000000
+          Size.Width = 67.000000000000000000
+          Size.Height = 34.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.WordWrap = False
+          Text = 'Temperature'
+          TabOrder = 15
+        end
+        object spnTemperature: TSpinBox
+          Touch.InteractiveGestures = [LongTap, DoubleTap]
+          Align = Right
+          TabOrder = 11
+          Cursor = crIBeam
+          Max = 2.000000000000000000
+          Value = 0.100000000000000000
+          ValueType = Float
+          Increment = 0.050000000745058060
+          KeyboardType = DecimalNumberPad
+          Position.X = 298.000000000000000000
+          Position.Y = 3.000000000000000000
+          Margins.Left = 3.000000000000000000
+          Margins.Top = 3.000000000000000000
+          Margins.Right = 3.000000000000000000
+          Margins.Bottom = 3.000000000000000000
+          Size.Width = 108.000000000000000000
+          Size.Height = 34.000000000000000000
+          Size.PlatformDefault = False
+          OnCanFocus = spnTemperatureCanFocus
+        end
+      end
+      object Layout4: TLayout
+        Align = Top
+        Margins.Left = 18.000000000000000000
+        Margins.Top = 7.000000000000000000
+        Margins.Right = 18.000000000000000000
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 18.000000000000000000
+        Position.Y = 62.000000000000000000
+        Size.Width = 409.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 2
+        object lblMaxTokens: TLabel
+          Align = Left
+          AutoSize = True
+          Margins.Top = 3.000000000000000000
+          Margins.Right = 3.000000000000000000
+          Margins.Bottom = 3.000000000000000000
+          Position.Y = 3.000000000000000000
+          Size.Width = 61.000000000000000000
+          Size.Height = 34.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.WordWrap = False
+          Text = 'Max tokens'
+          TabOrder = 12
+        end
+        object spnMaxTokens: TSpinBox
+          Touch.InteractiveGestures = [LongTap, DoubleTap]
+          Align = Right
+          TabOrder = 9
+          Cursor = crIBeam
+          Min = 100.000000000000000000
+          Max = 100000.000000000000000000
+          Value = 5000.000000000000000000
+          Increment = 100.000000000000000000
+          Position.X = 298.000000000000000000
+          Position.Y = 3.000000000000000000
+          Margins.Left = 3.000000000000000000
+          Margins.Top = 3.000000000000000000
+          Margins.Right = 3.000000000000000000
+          Margins.Bottom = 3.000000000000000000
+          Size.Width = 108.000000000000000000
+          Size.Height = 34.000000000000000000
+          Size.PlatformDefault = False
+          OnCanFocus = spnMaxTokensCanFocus
+        end
+      end
+      object Layout3: TLayout
+        Align = Top
+        Margins.Left = 18.000000000000000000
+        Margins.Top = 7.000000000000000000
+        Margins.Right = 18.000000000000000000
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 18.000000000000000000
+        Position.Y = 112.000000000000000000
+        Size.Width = 409.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 3
+        object spnTopK: TSpinBox
+          Touch.InteractiveGestures = [LongTap, DoubleTap]
+          Align = Right
+          TabOrder = 8
+          Cursor = crIBeam
+          Position.X = 298.000000000000000000
+          Position.Y = 3.000000000000000000
+          Margins.Left = 3.000000000000000000
+          Margins.Top = 3.000000000000000000
+          Margins.Right = 3.000000000000000000
+          Margins.Bottom = 3.000000000000000000
+          Size.Width = 108.000000000000000000
+          Size.Height = 34.000000000000000000
+          Size.PlatformDefault = False
+          OnCanFocus = spnTopKCanFocus
+        end
+        object lblTopK: TLabel
+          Align = Left
+          AutoSize = True
+          Margins.Top = 3.000000000000000000
+          Margins.Right = 3.000000000000000000
+          Margins.Bottom = 3.000000000000000000
+          Position.Y = 3.000000000000000000
+          Size.Width = 30.000000000000000000
+          Size.Height = 34.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.WordWrap = False
+          Text = 'Top K'
+          TabOrder = 13
+        end
+      end
+      object Layout2: TLayout
+        Align = Top
+        Margins.Left = 18.000000000000000000
+        Margins.Top = 7.000000000000000000
+        Margins.Right = 18.000000000000000000
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 18.000000000000000000
+        Position.Y = 162.000000000000000000
+        Size.Width = 409.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 4
+        object spnTopP: TSpinBox
+          Touch.InteractiveGestures = [LongTap, DoubleTap]
+          Align = Right
+          TabOrder = 10
+          Cursor = crIBeam
+          Max = 1.000000000000000000
+          Value = 0.500000000000000000
+          ValueType = Float
+          Increment = 0.050000000745058060
+          KeyboardType = DecimalNumberPad
+          Position.X = 298.000000000000000000
+          Position.Y = 3.000000000000000000
+          Margins.Left = 3.000000000000000000
+          Margins.Top = 3.000000000000000000
+          Margins.Right = 3.000000000000000000
+          Margins.Bottom = 3.000000000000000000
+          Size.Width = 108.000000000000000000
+          Size.Height = 34.000000000000000000
+          Size.PlatformDefault = False
+          OnCanFocus = spnTopPCanFocus
+        end
+        object lblTopP: TLabel
+          Align = Left
+          AutoSize = True
+          Margins.Top = 3.000000000000000000
+          Margins.Right = 3.000000000000000000
+          Margins.Bottom = 3.000000000000000000
+          Position.Y = 3.000000000000000000
+          Size.Width = 30.000000000000000000
+          Size.Height = 34.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.WordWrap = False
+          Text = 'Top P'
+          TabOrder = 14
+        end
+      end
     end
-    object Label1: TLabel
-      Align = Top
-      Margins.Left = 18.000000000000000000
-      Margins.Top = 7.000000000000000000
-      Margins.Right = 18.000000000000000000
-      Position.X = 18.000000000000000000
-      Position.Y = 7.000000000000000000
-      Size.Width = 288.000000000000000000
-      Size.Height = 17.000000000000000000
+    object tabInfo: TTabItem
+      CustomIcon = <
+        item
+        end>
+      IsSelected = False
+      Size.Width = 41.000000000000000000
+      Size.Height = 26.000000000000000000
       Size.PlatformDefault = False
-      TextSettings.WordWrap = False
-      Text = 'API key'
-      TabOrder = 7
-    end
-  end
-  object Layout8: TLayout
-    Align = Top
-    Margins.Left = 18.000000000000000000
-    Margins.Top = 3.000000000000000000
-    Margins.Right = 18.000000000000000000
-    Margins.Bottom = 3.000000000000000000
-    Position.X = 18.000000000000000000
-    Position.Y = 210.000000000000000000
-    Size.Width = 324.000000000000000000
-    Size.Height = 63.000000000000000000
-    Size.PlatformDefault = False
-    TabOrder = 9
-    object Label3: TLabel
-      Align = Top
-      Margins.Left = 18.000000000000000000
-      Margins.Top = 7.000000000000000000
-      Margins.Right = 18.000000000000000000
-      Position.X = 18.000000000000000000
-      Position.Y = 7.000000000000000000
-      Size.Width = 288.000000000000000000
-      Size.Height = 17.000000000000000000
-      Size.PlatformDefault = False
-      TextSettings.WordWrap = False
-      Text = 'Upload base'
-      TabOrder = 3
-    end
-    object edtUploadBase: TEdit
-      Touch.InteractiveGestures = [LongTap, DoubleTap]
-      Align = Top
-      TabOrder = 2
-      Position.X = 18.000000000000000000
-      Position.Y = 27.000000000000000000
-      Margins.Left = 18.000000000000000000
-      Margins.Top = 3.000000000000000000
-      Margins.Right = 18.000000000000000000
-      Size.Width = 288.000000000000000000
-      Size.Height = 22.000000000000000000
-      Size.PlatformDefault = False
-    end
-  end
-  object Layout9: TLayout
-    Align = Top
-    Margins.Left = 18.000000000000000000
-    Margins.Top = 12.000000000000000000
-    Margins.Right = 18.000000000000000000
-    Margins.Bottom = 3.000000000000000000
-    Position.X = 18.000000000000000000
-    Position.Y = 493.000000000000000000
-    Size.Width = 324.000000000000000000
-    Size.Height = 40.000000000000000000
-    Size.PlatformDefault = False
-    TabOrder = 6
-    object lblTokens: TLabel
-      Align = Left
-      Size.Width = 113.000000000000000000
-      Size.Height = 40.000000000000000000
-      Size.PlatformDefault = False
-      Text = 'Total used tokens'
-      TabOrder = 11
-    end
-    object Button2: TButton
-      Align = Right
-      Position.X = 244.000000000000000000
-      Size.Width = 80.000000000000000000
-      Size.Height = 40.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 4
-      Text = 'Button2'
+      StyleLookup = ''
+      TabOrder = 0
+      Text = 'Info'
+      object Layout9: TLayout
+        Align = Top
+        Margins.Left = 18.000000000000000000
+        Margins.Top = 12.000000000000000000
+        Margins.Right = 18.000000000000000000
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 18.000000000000000000
+        Position.Y = 12.000000000000000000
+        Size.Width = 409.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 2
+        object lblTokens: TLabel
+          Align = Left
+          Size.Width = 113.000000000000000000
+          Size.Height = 40.000000000000000000
+          Size.PlatformDefault = False
+          Text = 'Total used tokens'
+          TabOrder = 10
+        end
+      end
     end
   end
 end

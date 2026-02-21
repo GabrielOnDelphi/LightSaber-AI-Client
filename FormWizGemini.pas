@@ -6,42 +6,47 @@ USES
   System.SysUtils, System.Classes, system.UITypes,
   FMX.Types, FMX.Dialogs, FMX.Forms, FMX.StdCtrls, FMX.Edit, FMX.SpinBox, FMX.ListBox, FMX.Layouts, FMX.EditBox,
   AiLLM, AiClient, LightFmx.Common.AppData.Form, LightFmx.Common.AppData, FMX.Controls,
-  FMX.Controls.Presentation;
+  FMX.Controls.Presentation, FMX.TabControl;
 
 TYPE
   TfrmGemini = class(TLightForm)
     btnCancel      : TButton;
     btnOK          : TButton;
-    cmbModel       : TComboBox;
-    edtApiBase     : TEdit;
-    edtApiKey      : TEdit;
-    edtUploadBase  : TEdit;
-    Label1         : TLabel;
-    lblApiBase: TLabel;
-    Label3         : TLabel;
-    Label4         : TLabel;
     layBottom      : TLayout;
     lblInfo        : TLabel;
-    lblMaxTokens   : TLabel;
-    lblTemperature : TLabel;
-    lblTopK        : TLabel;
-    lblTopP        : TLabel;
-    spnMaxTokens   : TSpinBox;
-    spnTemperature : TSpinBox;
-    spnTopK        : TSpinBox;
-    spnTopP        : TSpinBox;
-    Layout1: TLayout;
-    Layout2: TLayout;
-    Layout3: TLayout;
-    Layout4: TLayout;
-    Button1: TButton;
+    TabControl: TTabControl;
+    TabItem1: TTabItem;
+    TabItem2: TTabItem;
     Layout5: TLayout;
-    Layout6: TLayout;
+    edtApiKey: TEdit;
+    Label1: TLabel;
     Layout7: TLayout;
+    cmbModel: TComboBox;
+    Label2: TLabel;
+    Layout6: TLayout;
+    lblApiBase: TLabel;
+    edtApiBase: TEdit;
     Layout8: TLayout;
+    Label3: TLabel;
+    edtUploadBase: TEdit;
+    layThinking: TLayout;
+    chkThinking: TCheckBox;
+    Layout1: TLayout;
+    lblTemperature: TLabel;
+    spnTemperature: TSpinBox;
+    Layout4: TLayout;
+    lblMaxTokens: TLabel;
+    spnMaxTokens: TSpinBox;
+    Layout3: TLayout;
+    spnTopK: TSpinBox;
+    lblTopK: TLabel;
+    Layout2: TLayout;
+    spnTopP: TSpinBox;
+    lblTopP: TLabel;
+    btnTest: TButton;
+    tabInfo: TTabItem;
     Layout9: TLayout;
     lblTokens: TLabel;
-    Button2: TButton;
     procedure btnCancelClick         (Sender: TObject);
     procedure btnOKClick             (Sender: TObject);
     procedure FormClose              (Sender: TObject; var Action: TCloseAction);
@@ -49,7 +54,8 @@ TYPE
     procedure spnTemperatureCanFocus (Sender: TObject; var ACanFocus: Boolean);
     procedure spnTopKCanFocus        (Sender: TObject; var ACanFocus: Boolean);
     procedure spnTopPCanFocus        (Sender: TObject; var ACanFocus: Boolean);
-    procedure Button1Click(Sender: TObject);
+    procedure chkThinkingCanFocus    (Sender: TObject; var ACanFocus: Boolean);
+    procedure btnTestClick(Sender: TObject);
   private
     Gemini: TAiClient;
     procedure Gui2Obj;
@@ -91,7 +97,7 @@ begin
 end;
 
 
-procedure TfrmGemini.Button1Click(Sender: TObject);
+procedure TfrmGemini.btnTestClick(Sender: TObject);
 VAR AIResponse: TAIResponse;
 begin
   Gui2Obj;
@@ -134,6 +140,7 @@ begin
   spnTopP.Value        := Gemini.LLM.TopP;
   spnTopK.Value        := Gemini.LLM.TopK;
   spnMaxTokens.Value   := Gemini.LLM.MaxTokens;
+  chkThinking.IsChecked:= Gemini.LLM.ThinkingEnabled;
 
   // Show total tokens used
   lblTokens.Text:= 'Tokens used: ' + Real2Str(Gemini.TokensTotal / 1000, 1) + 'K';
@@ -149,6 +156,7 @@ begin
   Gemini.LLM.TopP        := spnTopP.Value;
   Gemini.LLM.TopK        := Round(spnTopK.Value);
   Gemini.LLM.MaxTokens   := Round(spnMaxTokens.Value);
+  Gemini.LLM.ThinkingEnabled:= chkThinking.IsChecked;
 
   if cmbModel.ItemIndex >= 0
   then Gemini.LLM.Model:= cmbModel.Items[cmbModel.ItemIndex];
@@ -179,6 +187,12 @@ end;
 procedure TfrmGemini.spnTopPCanFocus(Sender: TObject; var ACanFocus: Boolean);
 begin
   lblInfo.Text:= Gemini.LLM.HintTopP;
+end;
+
+procedure TfrmGemini.chkThinkingCanFocus(Sender: TObject; var ACanFocus: Boolean);
+begin
+  lblInfo.Text:= 'When enabled, Gemini 2.5+ uses additional reasoning steps before answering.'+ CRLF
+               + 'Improves quality but increases token usage and response time.';
 end;
 
 

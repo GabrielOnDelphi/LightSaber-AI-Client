@@ -96,6 +96,7 @@ end;
 function GetAiAnswersFolder: string;
 begin
   {$IFDEF MsWindows}
+    //todo 1: this should not be apps folder becuase I cannot write there if Program Files!
     Result:= AppDataCore.AppFolder;  // The resources are in executable's folder
   {$ELSE}
     Result:= AppDataCore.AppDataFolder;  // The resources are deployed by the Deployment Manager
@@ -118,15 +119,13 @@ end;
 
 procedure SaveAiResponse(CONST SchemaName, Text: string); // Note: the loading is happening in TItemLesson.StartMakeQuestionsAI, based on the Sw_LoadJsonSectionsFromFile constant
 begin
-  if AppDataCore.RunningHome
-  then StringToFile(GetBackupJsonFullName(SchemaName), Text);
+  StringToFile(GetBackupJsonFullName(SchemaName), Text);
 end;
 
 
 procedure DeleteResponseFile(CONST SchemaName: string);
 begin
-  if AppDataCore.RunningHome
-  then DeleteFile(GetBackupJsonFullName(SchemaName));
+  DeleteFile(GetBackupJsonFullName(SchemaName));
 end;
 
 

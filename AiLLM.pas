@@ -1,8 +1,8 @@
-UNIT AiLLM;
+﻿UNIT AiLLM;
 
 {-------------------------------------------------------------------------------------------------------------
    www.GabrielMoraru.com
-   2025.07
+   2026.02
 --------------------------------------------------------------------------------------------------------------
    General AI client
 -------------------------------------------------------------------------------------------------------------}
@@ -31,6 +31,7 @@ TYPE
     TopK        : Integer;
     MaxTokens   : Integer;
     CandidateCnt: Integer;
+    ThinkingEnabled: Boolean;
 
     HintTemp  : string;
     HintTopP  : string;
@@ -48,6 +49,7 @@ TYPE
    end;
 
 
+
 IMPLEMENTATION
 
 
@@ -55,18 +57,19 @@ IMPLEMENTATION
 constructor TLLMObject.Create;
 begin
   inherited Create;
-  Temperature := 0.1;
-  TopP        := 0.95;
-  TopK        := 0;
-  MaxTokens   := 40000;
-  CandidateCnt:= 1;      // 1�8 (default 1)
+  Temperature    := 0.1;
+  TopP           := 0.95;
+  TopK           := 0;
+  MaxTokens      := 40000;
+  CandidateCnt   := 1;      // 1–8 (default 1)
+  ThinkingEnabled:= False;
   AvailableModels:= TStringList.Create;
   Load(AppDataCore.AppDataFolder(True)+ 'LLM_Data.bin');
 
   // Read secret API key (for lazy people)
   if (ApiKey = '')
-  AND FileExists(Appdatacore.AppFolder+ 'SecretKey.INI')
-  then ApiKey:= StringFromFile(Appdatacore.AppFolder+ 'SecretKey.INI');
+  AND FileExists(AppDataCore.AppSysDir+ 'SecretKey.INI')
+  then ApiKey:= StringFromFile(Appdatacore.AppSysDir+ 'SecretKey.INI');
 end;
 
  
@@ -76,8 +79,6 @@ begin
   FreeAndNil(AvailableModels);
   inherited;
 end;
-
-
 
 
 
@@ -107,10 +108,11 @@ begin
 end;
 
 
-
 function TLLMObject.Load(Stream: TLightStream): Boolean;
+VAR FileVersion: Word;
 begin
-  Result:= Stream.ReadHeader(ClassSignature, 2);
+  FileVersion:= Stream.ReadHeader(ClassSignature);
+  Result:= FileVersion > 0;
   if NOT Result then EXIT;
   ApiKey     := Stream.ReadString;
   Model      := Stream.ReadString;
@@ -120,13 +122,15 @@ begin
   TopP       := Stream.ReadDouble;
   TopK       := Stream.ReadInteger;
   MaxTokens  := Stream.ReadInteger;
+  if FileVersion >= 3
+  then ThinkingEnabled:= Stream.ReadBoolean;
   Stream.ReadPaddingValidation;
 end;
 
 
 procedure TLLMObject.Save(Stream: TLightStream);
 begin
-  Stream.WriteHeader(ClassSignature, 2);  // Header & version number
+  Stream.WriteHeader(ClassSignature, 3);
   Stream.WriteString (ApiKey     );
   Stream.WriteString (Model      );
   Stream.WriteString (ApiBase    );
@@ -135,6 +139,7 @@ begin
   Stream.WriteDouble (TopP       );
   Stream.WriteInteger(TopK       );
   Stream.WriteInteger(MaxTokens  );
+  Stream.WriteBoolean(ThinkingEnabled);
   Stream.WritePaddingValidation;
 end;
 

@@ -515,19 +515,13 @@ function TAiClient.makeGenerationConfig(CONST FilePath: String): TJSONPair;
 VAR
   ResponseSchema: TJSONObject;
   GenerationConfigObj: TJSONObject;
-  ThinkingConfig25: TJSONObject;
+  ThinkingConfigObj: TJSONObject;
 CONST
   ResponseMimeType = 'application/json';
 begin
   GenerationConfigObj:= nil;
 
   TRY
-    // This is only for Gemini 2.5
-    ThinkingConfig25 := TJSONObject.Create;
-    ThinkingConfig25.AddPair('thinkingBudget', 0);
-    ThinkingConfig25.AddPair('includeThoughts', FALSE);
-
-    // This is for both Gemini 2.0 and 2.5
     GenerationConfigObj := TJSONObject.Create;
     GenerationConfigObj.AddPair('responseMimeType', ResponseMimeType);
     GenerationConfigObj.AddPair('candidateCount',   LLM.CandidateCnt);
@@ -535,8 +529,15 @@ begin
     GenerationConfigObj.AddPair('temperature',      LLM.Temperature);
     GenerationConfigObj.AddPair('topP',             LLM.TopP);
     GenerationConfigObj.AddPair('topK',             LLM.TopK);
-    GenerationConfigObj.AddPair('thinkingConfig',   ThinkingConfig25);
-    // Note: ThinkingConfig25 is now owned by GenerationConfigObj - do NOT free it separately
+
+    // Thinking config for Gemini 2.5+ models
+    ThinkingConfigObj := TJSONObject.Create;
+    ThinkingConfigObj.AddPair('includeThoughts', FALSE);  // Never include thoughts in response - our parser doesn't handle them
+    if NOT LLM.ThinkingEnabled
+    then ThinkingConfigObj.AddPair('thinkingBudget', 0);  // Explicitly disable thinking to save tokens and time
+    // When ThinkingEnabled = True, omit thinkingBudget to let the API use dynamic thinking
+    GenerationConfigObj.AddPair('thinkingConfig', ThinkingConfigObj);
+    // Note: ThinkingConfigObj is now owned by GenerationConfigObj - do NOT free it separately
 
     // File path is empty when we just ping the AI to see if the connection is fine
     if FilePath <> '' then
@@ -548,7 +549,7 @@ begin
 
     Result:= TJSONPair.Create('generationConfig', GenerationConfigObj);
   EXCEPT
-    // Only free GenerationConfigObj - it owns all its children (including ThinkingConfig25, ResponseSchema)
+    // Only free GenerationConfigObj - it owns all its children (including ThinkingConfigObj, ResponseSchema)
     FreeAndNil(GenerationConfigObj);
     RAISE;
   END;
