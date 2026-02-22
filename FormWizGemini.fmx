@@ -72,7 +72,7 @@ object frmGemini: TfrmGemini
     Size.Width = 445.000000000000000000
     Size.Height = 403.000000000000000000
     Size.PlatformDefault = False
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 2
     TabPosition = PlatformDefault
     Sizes = (
@@ -86,7 +86,7 @@ object frmGemini: TfrmGemini
       CustomIcon = <
         item
         end>
-      IsSelected = True
+      IsSelected = False
       Size.Width = 42.000000000000000000
       Size.Height = 26.000000000000000000
       Size.PlatformDefault = False
@@ -505,7 +505,7 @@ object frmGemini: TfrmGemini
       CustomIcon = <
         item
         end>
-      IsSelected = False
+      IsSelected = True
       Size.Width = 41.000000000000000000
       Size.Height = 26.000000000000000000
       Size.PlatformDefault = False
@@ -531,6 +531,61 @@ object frmGemini: TfrmGemini
           Size.PlatformDefault = False
           Text = 'Total used tokens'
           TabOrder = 10
+        end
+        object btnReset: TButton
+          Align = Right
+          Margins.Left = 3.000000000000000000
+          Margins.Top = 3.000000000000000000
+          Margins.Right = 3.000000000000000000
+          Margins.Bottom = 3.000000000000000000
+          Position.X = 326.000000000000000000
+          Position.Y = 3.000000000000000000
+          Size.Width = 80.000000000000000000
+          Size.Height = 34.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 11
+          Text = 'Reset'
+          OnClick = btnResetClick
+        end
+      end
+      object Layout10: TLayout
+        Align = Top
+        Margins.Left = 18.000000000000000000
+        Margins.Top = 3.000000000000000000
+        Margins.Right = 18.000000000000000000
+        Position.X = 18.000000000000000000
+        Position.Y = 58.000000000000000000
+        Size.Width = 409.000000000000000000
+        Size.Height = 22.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 3
+        object lblTokensInput: TLabel
+          Align = Client
+          Size.Width = 409.000000000000000000
+          Size.Height = 22.000000000000000000
+          Size.PlatformDefault = False
+          Text = 'Input tokens'
+          TabOrder = 0
+        end
+      end
+      object Layout11: TLayout
+        Align = Top
+        Margins.Left = 18.000000000000000000
+        Margins.Top = 3.000000000000000000
+        Margins.Right = 18.000000000000000000
+        Position.X = 18.000000000000000000
+        Position.Y = 86.000000000000000000
+        Size.Width = 409.000000000000000000
+        Size.Height = 22.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 4
+        object lblTokensOutput: TLabel
+          Align = Client
+          Size.Width = 409.000000000000000000
+          Size.Height = 22.000000000000000000
+          Size.PlatformDefault = False
+          Text = 'Output tokens'
+          TabOrder = 0
         end
       end
     end

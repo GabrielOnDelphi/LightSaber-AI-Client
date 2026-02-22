@@ -53,7 +53,9 @@ TYPE
     function makeGenerationConfig(const FilePath: String): TJSONPair;
   public
     LLM: TLLMObject;
-    TokensTotal: Integer;    // Total used tokens for ALL prompts
+    TokensTotal : Integer;   // Total used tokens for ALL prompts
+    TokensInput : Integer;   // Total input (prompt) tokens for ALL prompts
+    TokensOutput: Integer;   // Total output (candidate) tokens for ALL prompts
     Timeout: Integer;        // HTTP timeout in milliseconds (connection and response)
 
     constructor Create; virtual;
@@ -373,7 +375,9 @@ begin
         Result.TokensPrompt     := UsageMetadata.GetValue<Integer>('promptTokenCount', 0);
         Result.TokensCandidate  := UsageMetadata.GetValue<Integer>('candidatesTokenCount', 0);
         Result.TokensTotal      := UsageMetadata.GetValue<Integer>('totalTokenCount', 0);
-        TokensTotal             := TokensTotal + Result.TokensTotal;
+        TokensTotal             := TokensTotal  + Result.TokensTotal;
+        TokensInput             := TokensInput  + Result.TokensPrompt;
+        TokensOutput            := TokensOutput + Result.TokensCandidate;
       end;
 
     // Extract information from the response
@@ -488,18 +492,31 @@ end;
 
 
 procedure TAiClient.Load(Stream: TLightStream);
+VAR Version: Word;
 begin
-  if NOT Stream.ReadHeader(ClassSignature, 2) then EXIT;
+  Version:= Stream.ReadHeader(ClassSignature);
+  if Version = 0 then EXIT;
+
   TokensTotal:= Stream.ReadInteger;
-  Stream.ReadPaddingValidation(12);
+
+  if Version >= 3 then
+    begin
+      TokensInput := Stream.ReadInteger;
+      TokensOutput:= Stream.ReadInteger;
+      Stream.ReadPaddingValidation(4);
+    end
+  else
+    Stream.ReadPaddingValidation(12);
 end;
 
 
 procedure TAiClient.Save(Stream: TLightStream);
 begin
-  Stream.WriteHeader(ClassSignature, 2);
+  Stream.WriteHeader(ClassSignature, 3);
   Stream.WriteInteger(TokensTotal);
-  Stream.WritePaddingValidation(12);
+  Stream.WriteInteger(TokensInput);
+  Stream.WriteInteger(TokensOutput);
+  Stream.WritePaddingValidation(4);
 end;
 
 

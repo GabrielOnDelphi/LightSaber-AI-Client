@@ -12,41 +12,46 @@ TYPE
   TfrmGemini = class(TLightForm)
     btnCancel      : TButton;
     btnOK          : TButton;
+    btnReset       : TButton;
+    btnTest        : TButton;
+    chkThinking    : TCheckBox;
+    cmbModel       : TComboBox;
+    edtApiBase     : TEdit;
+    edtApiKey      : TEdit;
+    edtUploadBase  : TEdit;
+    Label1         : TLabel;
+    Label2         : TLabel;
+    Label3         : TLabel;
     layBottom      : TLayout;
+    Layout1        : TLayout;
+    Layout2        : TLayout;
+    Layout3        : TLayout;
+    Layout4        : TLayout;
+    Layout5        : TLayout;
+    Layout6        : TLayout;
+    Layout7        : TLayout;
+    Layout8        : TLayout;
+    Layout9        : TLayout;
+    Layout10       : TLayout;
+    Layout11       : TLayout;
+    layThinking    : TLayout;
+    lblApiBase     : TLabel;
     lblInfo        : TLabel;
-    TabControl: TTabControl;
-    TabItem1: TTabItem;
-    TabItem2: TTabItem;
-    Layout5: TLayout;
-    edtApiKey: TEdit;
-    Label1: TLabel;
-    Layout7: TLayout;
-    cmbModel: TComboBox;
-    Label2: TLabel;
-    Layout6: TLayout;
-    lblApiBase: TLabel;
-    edtApiBase: TEdit;
-    Layout8: TLayout;
-    Label3: TLabel;
-    edtUploadBase: TEdit;
-    layThinking: TLayout;
-    chkThinking: TCheckBox;
-    Layout1: TLayout;
-    lblTemperature: TLabel;
-    spnTemperature: TSpinBox;
-    Layout4: TLayout;
-    lblMaxTokens: TLabel;
-    spnMaxTokens: TSpinBox;
-    Layout3: TLayout;
-    spnTopK: TSpinBox;
-    lblTopK: TLabel;
-    Layout2: TLayout;
-    spnTopP: TSpinBox;
-    lblTopP: TLabel;
-    btnTest: TButton;
-    tabInfo: TTabItem;
-    Layout9: TLayout;
-    lblTokens: TLabel;
+    lblMaxTokens   : TLabel;
+    lblTemperature : TLabel;
+    lblTokens      : TLabel;
+    lblTokensInput : TLabel;
+    lblTokensOutput: TLabel;
+    lblTopK        : TLabel;
+    lblTopP        : TLabel;
+    spnMaxTokens   : TSpinBox;
+    spnTemperature : TSpinBox;
+    spnTopK        : TSpinBox;
+    spnTopP        : TSpinBox;
+    TabControl     : TTabControl;
+    tabInfo        : TTabItem;
+    TabItem1       : TTabItem;
+    TabItem2       : TTabItem;
     procedure btnCancelClick         (Sender: TObject);
     procedure btnOKClick             (Sender: TObject);
     procedure FormClose              (Sender: TObject; var Action: TCloseAction);
@@ -56,6 +61,7 @@ TYPE
     procedure spnTopPCanFocus        (Sender: TObject; var ACanFocus: Boolean);
     procedure chkThinkingCanFocus    (Sender: TObject; var ACanFocus: Boolean);
     procedure btnTestClick(Sender: TObject);
+    procedure btnResetClick(Sender: TObject);
   private
     Gemini: TAiClient;
     procedure Gui2Obj;
@@ -142,8 +148,11 @@ begin
   spnMaxTokens.Value   := Gemini.LLM.MaxTokens;
   chkThinking.IsChecked:= Gemini.LLM.ThinkingEnabled;
 
-  // Show total tokens used
-  lblTokens.Text:= 'Tokens used: ' + Real2Str(Gemini.TokensTotal / 1000, 1) + 'K';
+  // Show token usage
+  lblTokens.Text      := 'Total: '  + Real2Str(Gemini.TokensTotal  / 1000, 1) + 'K';
+  lblTokensInput.Text := 'Input: '  + Real2Str(Gemini.TokensInput  / 1000, 1) + 'K';
+  lblTokensOutput.Text:= 'Output: ' + Real2Str(Gemini.TokensOutput / 1000, 1) + 'K';
+  btnReset.Visible:= AppData.RunningHome;
 end;
 
 
@@ -196,5 +205,15 @@ begin
 end;
 
 
+
+procedure TfrmGemini.btnResetClick(Sender: TObject);
+begin
+  Gemini.TokensTotal := 0;
+  Gemini.TokensInput := 0;
+  Gemini.TokensOutput:= 0;
+  lblTokens.Text      := 'Total: 0K';
+  lblTokensInput.Text := 'Input: 0K';
+  lblTokensOutput.Text:= 'Output: 0K';
+end;
 
 end.
