@@ -78,9 +78,10 @@ begin
     // Log errors
     PrintError(Result.ErrorMsg);
 
-    // Backup the AI output to disk
+    // Backup the AI output to disk (only when we got a valid JSON response)
     // Note: the loading is happening in TItemLesson.StartMakeQuestionsAI, based on the Sw_LoadJsonSectionsFromFile constant
-    SaveAiResponse(JsonShortName, Result.ExtractedJSONObj.ToString)
+    if Result.Valid   // Do not remove this! It will crash the program is the Gemini is not responding!
+    then SaveAiResponse(JsonShortName, Result.ExtractedJSONObj.ToString);
   FINALLY
     FreeAndNil(BodyJSON);     // BodyJSON owns the cloned pairs, so freeing it will free the cloned content
     FreeAndNil(LLMConfig);

@@ -11,7 +11,7 @@ INTERFACE
 
 USES
   //posix.UniStd,
-  System.SysUtils, System.Types;
+  System.SysUtils, System.Types,  System.IOUtils;
 
 TYPE
   { File categories for UI thumbnail display and AI processing.
@@ -95,13 +95,7 @@ end;
 -------------------------------------------------------------------------------------------------------------}
 function GetAiAnswersFolder: string;
 begin
-  {$IFDEF MsWindows}
-    //todo 1: this should not be apps folder becuase I cannot write there if Program Files!
-    Result:= AppDataCore.AppFolder;  // The resources are in executable's folder
-  {$ELSE}
-    Result:= AppDataCore.AppDataFolder;  // The resources are deployed by the Deployment Manager
-  {$ENDIF}
-
+  Result:= AppDataCore.AppDataFolder;  // The resources are deployed by the Deployment Manager
   Result:= Result+ Trail('AI Answers');
 end;
 
@@ -125,7 +119,7 @@ end;
 
 procedure DeleteResponseFile(CONST SchemaName: string);
 begin
-  DeleteFile(GetBackupJsonFullName(SchemaName));
+  TFile.Delete(GetBackupJsonFullName(SchemaName));
 end;
 
 

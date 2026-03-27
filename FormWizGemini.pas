@@ -1,4 +1,4 @@
-unit FormWizGemini;
+﻿unit FormWizGemini;
 
 INTERFACE
 
@@ -6,52 +6,54 @@ USES
   System.SysUtils, System.Classes, system.UITypes,
   FMX.Types, FMX.Dialogs, FMX.Forms, FMX.StdCtrls, FMX.Edit, FMX.SpinBox, FMX.ListBox, FMX.Layouts, FMX.EditBox,
   AiLLM, AiClient, LightFmx.Common.AppData.Form, LightFmx.Common.AppData, FMX.Controls,
-  FMX.Controls.Presentation, FMX.TabControl;
+  FMX.Controls.Presentation, FMX.TabControl,
+  LightFmx.Visual.ResponsiveLayout;
 
 TYPE
   TfrmGemini = class(TLightForm)
-    btnCancel      : TButton;
-    btnOK          : TButton;
-    btnReset       : TButton;
-    btnTest        : TButton;
-    chkThinking    : TCheckBox;
-    cmbModel       : TComboBox;
-    edtApiBase     : TEdit;
-    edtApiKey      : TEdit;
-    edtUploadBase  : TEdit;
-    Label1         : TLabel;
-    Label2         : TLabel;
-    Label3         : TLabel;
-    layBottom      : TLayout;
-    Layout1        : TLayout;
-    Layout2        : TLayout;
-    Layout3        : TLayout;
-    Layout4        : TLayout;
-    Layout5        : TLayout;
-    Layout6        : TLayout;
-    Layout7        : TLayout;
-    Layout8        : TLayout;
-    Layout9        : TLayout;
-    Layout10       : TLayout;
-    Layout11       : TLayout;
-    layThinking    : TLayout;
-    lblApiBase     : TLabel;
-    lblInfo        : TLabel;
-    lblMaxTokens   : TLabel;
-    lblTemperature : TLabel;
-    lblTokens      : TLabel;
-    lblTokensInput : TLabel;
-    lblTokensOutput: TLabel;
-    lblTopK        : TLabel;
-    lblTopP        : TLabel;
-    spnMaxTokens   : TSpinBox;
-    spnTemperature : TSpinBox;
-    spnTopK        : TSpinBox;
-    spnTopP        : TSpinBox;
-    TabControl     : TTabControl;
-    tabInfo        : TTabItem;
-    TabItem1       : TTabItem;
-    TabItem2       : TTabItem;
+    Container       : TLayout;
+    btnCancel       : TButton;
+    btnOK           : TButton;
+    btnReset        : TButton;
+    btnTest         : TButton;
+    chkThinking     : TCheckBox;
+    cmbModel        : TComboBox;
+    edtApiBase      : TEdit;
+    edtApiKey       : TEdit;
+    edtUploadBase   : TEdit;
+    Label1          : TLabel;
+    Label2          : TLabel;
+    Label3          : TLabel;
+    layBottom       : TLayout;
+    layUrl          : TLightCenteredLayout;
+    laySettings     : TLightCenteredLayout;
+    layInfo         : TLightCenteredLayout;
+    rowApiKey       : TResponsiveRowLayout;
+    rowModel        : TResponsiveRowLayout;
+    rowApiBase      : TResponsiveRowLayout;
+    rowUploadBase   : TResponsiveRowLayout;
+    rowTemperature  : TResponsiveRowLayout;
+    rowMaxTokens    : TResponsiveRowLayout;
+    rowTopK         : TResponsiveRowLayout;
+    rowTopP         : TResponsiveRowLayout;
+    rowTokens       : TResponsiveRowLayout;
+    lblApiBase      : TLabel;
+    lblInfo         : TLabel;
+    lblMaxTokens    : TLabel;
+    lblTemperature  : TLabel;
+    lblTokens       : TLabel;
+    lblTopK         : TLabel;
+    lblTopP         : TLabel;
+    spnMaxTokens    : TSpinBox;
+    spnTemperature  : TSpinBox;
+    spnTopK         : TSpinBox;
+    spnTopP         : TSpinBox;
+    TabControl      : TTabControl;
+    tabInfo         : TTabItem;
+    TabItem1        : TTabItem;
+    TabItem2        : TTabItem;
+    lblTokensInput  : TLabel;
+    lblTokensOutput : TLabel;
     procedure btnCancelClick         (Sender: TObject);
     procedure btnOKClick             (Sender: TObject);
     procedure FormClose              (Sender: TObject; var Action: TCloseAction);
@@ -64,15 +66,20 @@ TYPE
     procedure btnResetClick(Sender: TObject);
   private
     Gemini: TAiClient;
+    FOnEmbeddedClose: TNotifyEvent;
+    class var FInstance: TfrmGemini;
     procedure Gui2Obj;
     procedure Obj2Gui(aGemini: TAiClient);
   public
     class procedure ShowFormModal(aGemini: TAiClient);
+    class function  CreateEmbedded(aGemini: TAiClient; AOnClose: TNotifyEvent): TfrmGemini;
+    class procedure CloseEmbedded;
+    destructor Destroy; override;
   end;
 
 
 IMPLEMENTATION {$R *.fmx}
-USES LightCore;
+USES LightCore, LightCore.AppData;
 
 
 class procedure TfrmGemini.ShowFormModal(aGemini: TAiClient);
@@ -84,16 +91,60 @@ begin
 end;
 
 
+class function TfrmGemini.CreateEmbedded(aGemini: TAiClient; AOnClose: TNotifyEvent): TfrmGemini;
+begin
+  Assert(aGemini <> NIL, 'TfrmGemini.CreateEmbedded: aGemini cannot be nil');
+
+  // Prevent multiple instances (content is already visible in the host)
+  if Assigned(FInstance)
+  then EXIT(NIL);
+
+  AppData.CreateForm(TfrmGemini, FInstance, asNone);
+  FInstance.Obj2Gui(aGemini);
+  FInstance.FEmbedded:= TRUE;
+  FInstance.FOnEmbeddedClose:= AOnClose;
+  Result:= FInstance;
+end;
+
+
+class procedure TfrmGemini.CloseEmbedded;
+begin
+  if Assigned(FInstance)
+  AND FInstance.FEmbedded
+  then FreeAndNil(FInstance);
+end;
+
+
+destructor TfrmGemini.Destroy;
+begin
+  if FEmbedded then
+  begin
+    Container.Parent:= Self;
+    if Assigned(FOnEmbeddedClose)
+    then FOnEmbeddedClose(Self);
+  end;
+  FInstance:= NIL;
+  inherited;
+end;
+
+
+{ Embedded: deferred Free via ForceQueue — FreeAndNil inside an OnClick handler would destroy
+  the button while FMX still accesses it (GetAction), causing an AV on freed memory. }
+
 procedure TfrmGemini.btnCancelClick(Sender: TObject);
 begin
-  Close;
+  if FEmbedded
+  then TThread.ForceQueue(NIL, procedure begin CloseEmbedded end)
+  else Close;
 end;
 
 
 procedure TfrmGemini.btnOKClick(Sender: TObject);
 begin
   Gui2Obj;
-  Close;
+  if FEmbedded
+  then TThread.ForceQueue(NIL, procedure begin CloseEmbedded end)
+  else Close;
 end;
 
 

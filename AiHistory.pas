@@ -22,6 +22,7 @@ TYPE
      ChatType  : TChatType;
      Text      : string;      // Used if PartType is cptText.
      FileName  : string;      // Our input file. Used if PartType is cptFileData.
+     FileBytes : TBytes;      // Cached file content (not serialized here - managed by subclass). Populated at file selection time so the original file can be renamed/deleted.
      FileUri   : string;      // We get it from Gemini. Used if PartType is cptFileData (URI from "Gemini Files API"). If this is empty, we signal that there was a problem during upload. Example: 'https://generativelanguage.googleapis.com/v1beta/files/p684bj0vdbxj'
      Width     : integer;     // Width and height of the original input image. Used if PartType is cptFile. Has no meaning when the input is a PDF
      Height    : Integer;

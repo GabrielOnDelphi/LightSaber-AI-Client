@@ -1,4 +1,4 @@
-UNIT AiClient;
+﻿UNIT AiClient;
 
 {-------------------------------------------------------------------------------------------------------------
    www.GabrielMoraru.com
@@ -121,17 +121,17 @@ end;
    ERROR HANDLING HELPERS
 -------------------------------------------------------------------------------------------------------------}
 
-function TAiClient.getHttpErrorMessage(StatusCode: Integer): string;  //ToDo 4: these errors are specific to Gemini. Move them these
+function TAiClient.getHttpErrorMessage(StatusCode: Integer): string;
 begin
   case StatusCode of
-    400: Result := 'Bad request - please check your input parameters';
-    401: Result := 'Unauthorized - please check your API key';
-    403: Result := 'Forbidden - your API key may not have sufficient permissions';
-    404: Result := 'Not found - the requested resource does not exist';
-    429: Result := 'Quota limit exceeded - please try again later';
-    500: Result := 'Internal server error - please try again';
+    400: Result := 'Bad request - Please check your input parameters.';
+    401: Result := 'Unauthorized - Please check your API key.';
+    403: Result := 'Forbidden - Your API key may not have sufficient permissions.';
+    404: Result := 'Not found - The requested resource does not exist.';
+    429: Result := 'Quota limit exceeded - Please try again later.';
+    500: Result := 'Internal server error - Please try again.';
     502,
-    503: Result := 'Service temporarily unavailable - please try again later';
+    503: Result := 'Service temporarily unavailable - Please try again later';
     else Result := Format('HTTP error %d occurred', [StatusCode]);
   end;
 end;
@@ -150,16 +150,16 @@ end;
    UPLOAD FILE(S)
 -------------------------------------------------------------------------------------------------------------}
 
-// Uploads all files
+// Uploads all files. Uses cached FileBytes when available, falls back to disk.
 procedure TAiClient.UploadFiles(InputFiles: TChatParts);
 VAR InputPart: TChatPart;
 begin
   for VAR i:= 0 to InputFiles.Count-1 do
     begin
       InputPart:= InputFiles[i];
-      if TFile.Exists(InputPart.FileName)
-      then uploadFile(InputPart)                           // UPLOAD
-      else AppDataCore.RamLog.AddWarn('File not found: '+ InputPart.FileName);
+      if (Length(InputPart.FileBytes) > 0) OR TFile.Exists(InputPart.FileName)  // DEPRECATED: Remove TFile.Exists fallback after migration — FileBytes will always be populated.
+      then uploadFile(InputPart)
+      else AppDataCore.RamLog.AddWarn('File not found and no cached bytes: '+ InputPart.FileName);
     end;
 end;
 
@@ -203,7 +203,9 @@ begin
       // Set headers required for starting a resumable upload
       Request.CustomHeaders['X-Goog-Upload-Protocol']              := 'resumable';
       Request.CustomHeaders['X-Goog-Upload-Command']               := 'start';
-      Request.CustomHeaders['X-Goog-Upload-Header-Content-Length'] := IntToStr(TFile.GetSize(InputPart.FileName));
+      if Length(InputPart.FileBytes) > 0  // DEPRECATED: Remove else branch after migration — FileBytes will always be populated.
+      then Request.CustomHeaders['X-Goog-Upload-Header-Content-Length'] := IntToStr(Length(InputPart.FileBytes))
+      else Request.CustomHeaders['X-Goog-Upload-Header-Content-Length'] := IntToStr(TFile.GetSize(InputPart.FileName));
       Request.CustomHeaders['X-Goog-Upload-Header-Content-Type']   := Extension2MimeType(InputPart.FileName);
       Request.CustomHeaders['Content-Type']                        := 'application/json';
 
@@ -234,7 +236,10 @@ begin
     //------------------------------------------------
     //  Step 2: Upload File Data and Finalize
     //------------------------------------------------
-    FileData   := TFile.ReadAllBytes(InputPart.FileName);   //ToDo 1: CRITICAL: we don't read from disk. The input file is now embedded into our stream! The question is, where do we actually load the content of the input file (png/pdf) into our stream? In LessonWizzardSetup?
+    // Use cached bytes when available, fall back to disk for backward compat (resolves ToDo 1)
+    if Length(InputPart.FileBytes) > 0  // DEPRECATED: Remove else branch after migration — FileBytes will always be populated.
+    then FileData:= InputPart.FileBytes
+    else FileData:= TFile.ReadAllBytes(InputPart.FileName);
     DataStream := TBytesStream.Create(FileData);
 
     // No need to clear CustomHeaders here; new values will override or add.
