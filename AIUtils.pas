@@ -119,7 +119,7 @@ end;
 
 procedure DeleteResponseFile(CONST SchemaName: string);
 begin
-  TFile.Delete(GetBackupJsonFullName(SchemaName));
+  TryDeleteFile(GetBackupJsonFullName(SchemaName));
 end;
 
 
