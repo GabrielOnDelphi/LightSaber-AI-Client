@@ -2,8 +2,8 @@ object frmGemini: TfrmGemini
   Left = 630
   Top = 330
   Caption = 'Geminy'
-  ClientHeight = 485
-  ClientWidth = 533
+  ClientHeight = 463
+  ClientWidth = 416
   Position = Designed
   FormFactor.Width = 320
   FormFactor.Height = 480
@@ -14,8 +14,8 @@ object frmGemini: TfrmGemini
   DesignerMasterStyle = 0
   object Container: TLayout
     Align = Client
-    Size.Width = 533.000000000000000000
-    Size.Height = 485.000000000000000000
+    Size.Width = 416.000000000000000000
+    Size.Height = 463.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
     object lblInfo: TLabel
@@ -26,8 +26,8 @@ object frmGemini: TfrmGemini
       Margins.Right = 3.000000000000000000
       Margins.Bottom = 3.000000000000000000
       Position.X = 3.000000000000000000
-      Position.Y = 389.000000000000000000
-      Size.Width = 527.000000000000000000
+      Position.Y = 367.000000000000000000
+      Size.Width = 410.000000000000000000
       Size.Height = 48.000000000000000000
       Size.PlatformDefault = False
       Text = '.'#13#10'.'#13#10'.'
@@ -35,8 +35,8 @@ object frmGemini: TfrmGemini
     end
     object layBottom: TLayout
       Align = Bottom
-      Position.Y = 440.000000000000000000
-      Size.Width = 533.000000000000000000
+      Position.Y = 418.000000000000000000
+      Size.Width = 416.000000000000000000
       Size.Height = 45.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 0
@@ -47,7 +47,7 @@ object frmGemini: TfrmGemini
         Margins.Top = 3.000000000000000000
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 3.000000000000000000
-        Position.X = 364.000000000000000000
+        Position.X = 247.000000000000000000
         Position.Y = 3.000000000000000000
         Size.Width = 80.000000000000000000
         Size.Height = 39.000000000000000000
@@ -63,7 +63,7 @@ object frmGemini: TfrmGemini
         Margins.Top = 3.000000000000000000
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 3.000000000000000000
-        Position.X = 450.000000000000000000
+        Position.X = 333.000000000000000000
         Position.Y = 3.000000000000000000
         Size.Width = 80.000000000000000000
         Size.Height = 39.000000000000000000
@@ -79,20 +79,20 @@ object frmGemini: TfrmGemini
       Margins.Top = 12.000000000000000000
       Margins.Right = 12.000000000000000000
       Margins.Bottom = 12.000000000000000000
-      Size.Width = 509.000000000000000000
-      Size.Height = 362.000000000000000000
+      Size.Width = 392.000000000000000000
+      Size.Height = 340.000000000000000000
       Size.PlatformDefault = False
       TabHeight = 49.000000000000000000
       TabIndex = 0
       TabOrder = 2
       TabPosition = PlatformDefault
       Sizes = (
-        509s
-        313s
-        509s
-        313s
-        509s
-        313s)
+        392s
+        291s
+        392s
+        291s
+        392s
+        291s)
       object TabItem1: TTabItem
         CustomIcon = <
           item
@@ -109,8 +109,7 @@ object frmGemini: TfrmGemini
         object layUrl: TLightCenteredLayout
           Align = Top
           Padding.Top = 12.000000000000000000
-          Position.X = 54.500000000000000000
-          Size.Width = 400.000000000000000000
+          Size.Width = 392.000000000000000000
           Size.Height = 259.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
@@ -122,7 +121,7 @@ object frmGemini: TfrmGemini
             Margins.Top = 12.000000000000000000
             Margins.Bottom = 4.000000000000000000
             Position.Y = 24.000000000000000000
-            Size.Width = 400.000000000000000000
+            Size.Width = 392.000000000000000000
             Size.Height = 32.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 0
@@ -138,9 +137,9 @@ object frmGemini: TfrmGemini
             end
             object edtApiKey: TEdit
               Touch.InteractiveGestures = [LongTap, DoubleTap]
-              Align = Right
+              Align = Left
               TabOrder = 0
-              Position.X = 199.000000000000000000
+              Position.X = 168.000000000000000000
               Size.Width = 201.000000000000000000
               Size.Height = 32.000000000000000000
               Size.PlatformDefault = False
@@ -151,7 +150,7 @@ object frmGemini: TfrmGemini
             Margins.Top = 12.000000000000000000
             Margins.Bottom = 4.000000000000000000
             Position.Y = 72.000000000000000000
-            Size.Width = 400.000000000000000000
+            Size.Width = 392.000000000000000000
             Size.Height = 32.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 2
@@ -166,8 +165,8 @@ object frmGemini: TfrmGemini
               Text = 'Model'
             end
             object cmbModel: TComboBox
-              Align = Right
-              Position.X = 199.000000000000000000
+              Align = Left
+              Position.X = 168.000000000000000000
               Size.Width = 201.000000000000000000
               Size.Height = 32.000000000000000000
               Size.PlatformDefault = False
@@ -179,7 +178,7 @@ object frmGemini: TfrmGemini
             Margins.Top = 12.000000000000000000
             Margins.Bottom = 4.000000000000000000
             Position.Y = 120.000000000000000000
-            Size.Width = 400.000000000000000000
+            Size.Width = 392.000000000000000000
             Size.Height = 32.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 3
@@ -195,9 +194,9 @@ object frmGemini: TfrmGemini
             end
             object edtApiBase: TEdit
               Touch.InteractiveGestures = [LongTap, DoubleTap]
-              Align = Right
+              Align = Left
               TabOrder = 0
-              Position.X = 199.000000000000000000
+              Position.X = 168.000000000000000000
               Size.Width = 201.000000000000000000
               Size.Height = 32.000000000000000000
               Size.PlatformDefault = False
@@ -208,7 +207,7 @@ object frmGemini: TfrmGemini
             Margins.Top = 12.000000000000000000
             Margins.Bottom = 4.000000000000000000
             Position.Y = 168.000000000000000000
-            Size.Width = 400.000000000000000000
+            Size.Width = 392.000000000000000000
             Size.Height = 32.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 4
@@ -224,9 +223,9 @@ object frmGemini: TfrmGemini
             end
             object edtUploadBase: TEdit
               Touch.InteractiveGestures = [LongTap, DoubleTap]
-              Align = Right
+              Align = Left
               TabOrder = 0
-              Position.X = 199.000000000000000000
+              Position.X = 168.000000000000000000
               Size.Width = 201.000000000000000000
               Size.Height = 32.000000000000000000
               Size.PlatformDefault = False
@@ -241,7 +240,7 @@ object frmGemini: TfrmGemini
             Margins.Bottom = 3.000000000000000000
             Position.X = 55.000000000000000000
             Position.Y = 216.000000000000000000
-            Size.Width = 290.000000000000000000
+            Size.Width = 282.000000000000000000
             Size.Height = 40.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 1
@@ -268,8 +267,7 @@ object frmGemini: TfrmGemini
         object laySettings: TLightCenteredLayout
           Align = Top
           Padding.Top = 12.000000000000000000
-          Position.X = 54.500000000000000000
-          Size.Width = 400.000000000000000000
+          Size.Width = 392.000000000000000000
           Size.Height = 247.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
@@ -281,7 +279,7 @@ object frmGemini: TfrmGemini
             Margins.Top = 12.000000000000000000
             Margins.Bottom = 4.000000000000000000
             Position.Y = 24.000000000000000000
-            Size.Width = 400.000000000000000000
+            Size.Width = 392.000000000000000000
             Size.Height = 34.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 0
@@ -305,7 +303,7 @@ object frmGemini: TfrmGemini
               ValueType = Float
               Increment = 0.050000000745058060
               KeyboardType = DecimalNumberPad
-              Position.X = 292.000000000000000000
+              Position.X = 284.000000000000000000
               Size.Width = 108.000000000000000000
               Size.Height = 34.000000000000000000
               Size.PlatformDefault = False
@@ -317,7 +315,7 @@ object frmGemini: TfrmGemini
             Margins.Top = 12.000000000000000000
             Margins.Bottom = 4.000000000000000000
             Position.Y = 74.000000000000000000
-            Size.Width = 400.000000000000000000
+            Size.Width = 392.000000000000000000
             Size.Height = 34.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 1
@@ -340,7 +338,7 @@ object frmGemini: TfrmGemini
               Max = 100000.000000000000000000
               Value = 5000.000000000000000000
               Increment = 100.000000000000000000
-              Position.X = 292.000000000000000000
+              Position.X = 284.000000000000000000
               Size.Width = 108.000000000000000000
               Size.Height = 34.000000000000000000
               Size.PlatformDefault = False
@@ -352,7 +350,7 @@ object frmGemini: TfrmGemini
             Margins.Top = 12.000000000000000000
             Margins.Bottom = 4.000000000000000000
             Position.Y = 124.000000000000000000
-            Size.Width = 400.000000000000000000
+            Size.Width = 392.000000000000000000
             Size.Height = 34.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 2
@@ -371,7 +369,7 @@ object frmGemini: TfrmGemini
               Align = Right
               TabOrder = 0
               Cursor = crIBeam
-              Position.X = 292.000000000000000000
+              Position.X = 284.000000000000000000
               Size.Width = 108.000000000000000000
               Size.Height = 34.000000000000000000
               Size.PlatformDefault = False
@@ -383,7 +381,7 @@ object frmGemini: TfrmGemini
             Margins.Top = 12.000000000000000000
             Margins.Bottom = 4.000000000000000000
             Position.Y = 174.000000000000000000
-            Size.Width = 400.000000000000000000
+            Size.Width = 392.000000000000000000
             Size.Height = 34.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 3
@@ -407,7 +405,7 @@ object frmGemini: TfrmGemini
               ValueType = Float
               Increment = 0.050000000745058060
               KeyboardType = DecimalNumberPad
-              Position.X = 292.000000000000000000
+              Position.X = 284.000000000000000000
               Size.Width = 108.000000000000000000
               Size.Height = 34.000000000000000000
               Size.PlatformDefault = False
@@ -419,7 +417,7 @@ object frmGemini: TfrmGemini
             Margins.Top = 8.000000000000000000
             Margins.Bottom = 3.000000000000000000
             Position.Y = 220.000000000000000000
-            Size.Width = 400.000000000000000000
+            Size.Width = 392.000000000000000000
             Size.Height = 24.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 4
@@ -444,8 +442,7 @@ object frmGemini: TfrmGemini
         object layInfo: TLightCenteredLayout
           Align = Top
           Padding.Top = 12.000000000000000000
-          Position.X = 54.500000000000000000
-          Size.Width = 400.000000000000000000
+          Size.Width = 392.000000000000000000
           Size.Height = 130.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
@@ -457,7 +454,7 @@ object frmGemini: TfrmGemini
             Margins.Top = 12.000000000000000000
             Margins.Bottom = 4.000000000000000000
             Position.Y = 24.000000000000000000
-            Size.Width = 400.000000000000000000
+            Size.Width = 392.000000000000000000
             Size.Height = 36.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 0
@@ -472,7 +469,7 @@ object frmGemini: TfrmGemini
             end
             object btnReset: TButton
               Align = Right
-              Position.X = 320.000000000000000000
+              Position.X = 312.000000000000000000
               Size.Width = 80.000000000000000000
               Size.Height = 36.000000000000000000
               Size.PlatformDefault = False
@@ -490,7 +487,7 @@ object frmGemini: TfrmGemini
             Margins.Bottom = 5.000000000000000000
             Position.X = 3.000000000000000000
             Position.Y = 76.000000000000000000
-            Size.Width = 394.000000000000000000
+            Size.Width = 386.000000000000000000
             Size.Height = 16.000000000000000000
             Size.PlatformDefault = False
             Text = 'Input tokens'
@@ -504,7 +501,7 @@ object frmGemini: TfrmGemini
             Margins.Bottom = 5.000000000000000000
             Position.X = 3.000000000000000000
             Position.Y = 109.000000000000000000
-            Size.Width = 394.000000000000000000
+            Size.Width = 386.000000000000000000
             Size.Height = 16.000000000000000000
             Size.PlatformDefault = False
             Text = 'Output tokens'
