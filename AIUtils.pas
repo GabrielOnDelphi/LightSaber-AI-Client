@@ -95,8 +95,9 @@ end;
 -------------------------------------------------------------------------------------------------------------}
 function GetAiAnswersFolder: string;
 begin
-  Result:= AppDataCore.AppDataFolder;  // The resources are deployed by the Deployment Manager
+  Result:= AppDataCore.AppDataFolder;
   Result:= Result+ Trail('AI Answers');
+  ForceDirectories(Result);  // Ensure directory exists (Android may not auto-create subdirectories)
 end;
 
 
@@ -113,7 +114,12 @@ end;
 
 procedure SaveAiResponse(CONST SchemaName, Text: string); // Note: the loading is happening in TItemLesson.StartMakeQuestionsAI, based on the Sw_LoadJsonSectionsFromFile constant
 begin
-  StringToFile(GetBackupJsonFullName(SchemaName), Text);
+  TRY
+    StringToFile(GetBackupJsonFullName(SchemaName), Text);
+  EXCEPT
+    on E: Exception do
+      AppDataCore.RamLog.AddError('SaveAiResponse failed: ' + E.Message);  // Non-critical backup — log error, don't block AI evaluation
+  END;
 end;
 
 
