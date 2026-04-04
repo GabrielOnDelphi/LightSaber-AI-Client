@@ -175,6 +175,10 @@ VAR ModelName: string;
 begin
   Gemini:= aGemini;
 
+  // Hide info label until a control gets focus and sets its hint text
+  lblInfo.Text:= '';
+  lblInfo.Visible:= FALSE;
+
   // Populating models
   cmbModel.Items.Clear;
   for ModelName in Gemini.LLM.AvailableModels
@@ -232,27 +236,32 @@ end;
 procedure TfrmGemini.spnMaxTokensCanFocus(Sender: TObject; var ACanFocus: Boolean);
 begin
   lblInfo.Text:= Gemini.LLM.HintMaxTok;
+  lblInfo.Visible:= lblInfo.Text <> '';
 end;
 
 procedure TfrmGemini.spnTemperatureCanFocus(Sender: TObject; var ACanFocus: Boolean);
 begin
   lblInfo.Text:= Gemini.LLM.HintTemp;
+  lblInfo.Visible:= lblInfo.Text <> '';
 end;
 
 procedure TfrmGemini.spnTopKCanFocus(Sender: TObject; var ACanFocus: Boolean);
 begin
   lblInfo.Text:= Gemini.LLM.HintTopK;
+  lblInfo.Visible:= lblInfo.Text <> '';
 end;
 
 procedure TfrmGemini.spnTopPCanFocus(Sender: TObject; var ACanFocus: Boolean);
 begin
   lblInfo.Text:= Gemini.LLM.HintTopP;
+  lblInfo.Visible:= lblInfo.Text <> '';
 end;
 
 procedure TfrmGemini.chkThinkingCanFocus(Sender: TObject; var ACanFocus: Boolean);
 begin
   lblInfo.Text:= 'When enabled, Gemini 2.5+ uses additional reasoning steps before answering.'+ CRLF
                + 'Improves quality but increases token usage and response time.';
+  lblInfo.Visible:= TRUE;
 end;
 
 
