@@ -83,7 +83,7 @@ object frmGemini: TfrmGemini
       Size.Height = 340.000000000000000000
       Size.PlatformDefault = False
       TabHeight = 49.000000000000000000
-      TabIndex = 0
+      TabIndex = 2
       TabOrder = 2
       TabPosition = PlatformDefault
       Sizes = (
@@ -97,7 +97,7 @@ object frmGemini: TfrmGemini
         CustomIcon = <
           item
           end>
-        IsSelected = True
+        IsSelected = False
         Size.Width = 42.000000000000000000
         Size.Height = 49.000000000000000000
         Size.PlatformDefault = False
@@ -430,7 +430,7 @@ object frmGemini: TfrmGemini
         CustomIcon = <
           item
           end>
-        IsSelected = False
+        IsSelected = True
         Size.Width = 41.000000000000000000
         Size.Height = 49.000000000000000000
         Size.PlatformDefault = False

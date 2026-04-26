@@ -7,7 +7,7 @@ USES
   FMX.Types, FMX.Dialogs, FMX.Forms, FMX.StdCtrls, FMX.Edit, FMX.SpinBox, FMX.ListBox, FMX.Layouts, FMX.EditBox,
   AiLLM, AiClient, LightFmx.Common.AppData.Form, LightFmx.Common.AppData, FMX.Controls,
   FMX.Controls.Presentation, FMX.TabControl,
-  LightFmx.Visual.ResponsiveLayout;
+  LightFmx.Visual.LayoutResponsive;
 
 TYPE
   TfrmGemini = class(TLightForm)
